@@ -4,6 +4,7 @@ import android.app.Application
 import com.dima6120.core_api.AppWithApplicationComponent
 import com.dima6120.core_api.ApplicationComponentProvider
 import com.dima6120.yamalc.di.ApplicationComponent
+import com.dima6120.yamalc.di.DaggerApplicationComponent
 
 class App: Application(), AppWithApplicationComponent {
 

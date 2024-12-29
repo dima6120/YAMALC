@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="searchItemTitle">Discover</string>
+    <string name="myListsItemTitle">My List</string>
+    <string name="profileItemTitle">Profile</string>
+</resources>

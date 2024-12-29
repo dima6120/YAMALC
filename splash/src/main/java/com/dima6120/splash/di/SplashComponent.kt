@@ -13,11 +13,15 @@ interface SplashComponent {
 
     fun provideSplashViewModelFactory(): SplashViewModel.Factory
 
+    @Component.Factory
+    interface Factory {
+
+        fun createSplashComponent(applicationComponentProvider: ApplicationComponentProvider): SplashComponent
+    }
+
     companion object {
 
         fun create(applicationComponentProvider: ApplicationComponentProvider): SplashComponent =
-            DaggerSplashComponent.builder()
-                .applicationComponentProvider(applicationComponentProvider)
-                .build()
+            DaggerSplashComponent.factory().createSplashComponent(applicationComponentProvider)
     }
 }
