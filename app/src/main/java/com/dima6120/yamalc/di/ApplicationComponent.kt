@@ -1,8 +1,11 @@
 package com.dima6120.yamalc.di
 
 import android.content.Context
+import com.dima6120.anime_lists.di.AnimeListsNavGraphProviderExternalModule
 import com.dima6120.core_api.ApplicationComponentProvider
 import com.dima6120.main.di.MainNavGraphProviderExternalModule
+import com.dima6120.profile.di.ProfileNavGraphProviderExternalModule
+import com.dima6120.search.di.SearchNavGraphProviderExternalModule
 import com.dima6120.splash.di.SplashNavGraphProviderExternalModule
 import dagger.BindsInstance
 import dagger.Component
@@ -12,7 +15,10 @@ import javax.inject.Singleton
 @Component(
     modules = [
         SplashNavGraphProviderExternalModule::class,
-        MainNavGraphProviderExternalModule::class
+        MainNavGraphProviderExternalModule::class,
+        ProfileNavGraphProviderExternalModule::class,
+        SearchNavGraphProviderExternalModule::class,
+        AnimeListsNavGraphProviderExternalModule::class
     ]
 )
 interface ApplicationComponent: ApplicationComponentProvider {

@@ -53,13 +53,19 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     api(project(":main-api"))
+    implementation(project(":profile-api"))
+    implementation(project(":search-api"))
+    implementation(project(":anime-lists-api"))
     implementation(project(":ui"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.compose.material)
+
+    implementation(libs.compose.navigation)
+    implementation(libs.compose.material)
 
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)

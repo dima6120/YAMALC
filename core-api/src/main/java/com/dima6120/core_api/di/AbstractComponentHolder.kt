@@ -20,6 +20,8 @@ abstract class AbstractComponentHolder<T>: ComponentHolder<T> {
 
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                Log.d(TAG, "$componentName:$id:$event")
+
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     Log.d(TAG, "Destroying $componentName:$id component")
 

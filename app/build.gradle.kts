@@ -56,7 +56,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,8 +71,12 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.compose.material)
 
+    implementation(project(":ui"))
     implementation(project(":core-api"))
     implementation(project(":core"))
     implementation(project(":main"))
     implementation(project(":splash"))
+    implementation(project(":profile"))
+    implementation(project(":search"))
+    implementation(project(":anime-lists"))
 }
