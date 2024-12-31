@@ -30,10 +30,6 @@ class SplashViewModel @Inject constructor(): ViewModel() {
         updateState { copy(navigateToMainRouteEvent = consumed) }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     private inline fun updateState(updater: SplashState.() -> SplashState) {
         state = updater(state)
     }

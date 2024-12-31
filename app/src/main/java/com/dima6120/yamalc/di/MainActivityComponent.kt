@@ -1,12 +1,13 @@
 package com.dima6120.yamalc.di
 
 import com.dima6120.core_api.ApplicationComponentProvider
-import com.dima6120.yamalc.MainActivity
+import com.dima6120.yamalc.ui.MainActivity
 import dagger.Component
 
 
 @Component(
-    dependencies = [ApplicationComponentProvider::class]
+    dependencies = [ApplicationComponentProvider::class],
+    modules = [UseCaseModule::class]
 )
 interface MainActivityComponent {
 

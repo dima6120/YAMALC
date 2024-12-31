@@ -10,7 +10,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.minSdk.get().toInt()
+
+        buildConfigField("String", "OAUTH_ENDPONT", "\"https://myanimelist.net/v1/oauth2/\"")
+        buildConfigField("String", "API_ENDPONT", "\"https://api.myanimelist.net/v2/\"")
+        buildConfigField("String", "CLIENT_ID", "\"7222db061f717d844f038dab2777175b\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -25,12 +29,18 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -48,5 +58,9 @@ dependencies {
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 
-    implementation(libs.kotlinx.serializationJson)
+    implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.kotlinxSerializationConverter)
+    implementation(libs.squareup.okhttp.loggingInterceptor)
 }
