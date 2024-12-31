@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_error_title">Network error</string>
+    <string name="network_error_text">Please check your internet connection and try again</string>
+
+    <string name="unknown_error_title">Unknown error</string>
+    <string name="unknown_error_text">An unknown error has occurred, please try again later</string>
+
+    <string name="try_again_button">Try again</string>
+</resources>

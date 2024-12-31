@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dima6120.yamalc"
-        minSdk = 24
+        minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -68,11 +68,12 @@ dependencies {
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 
+    implementation(libs.compose.stateEvents)
+
     implementation(libs.compose.navigation)
     implementation(libs.compose.material)
 
     implementation(project(":ui"))
-    implementation(project(":core-api"))
     implementation(project(":core"))
     implementation(project(":main"))
     implementation(project(":splash"))

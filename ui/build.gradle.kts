@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -53,11 +53,15 @@ dependencies {
 
     api(project(":core-api"))
 
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.compose.material)
+    api(libs.coil.compose)
+    api(libs.coil.network)
+
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.ui)
+    api(libs.androidx.ui.graphics)
+    api(libs.androidx.ui.tooling.preview)
+    api(libs.compose.material)
+    debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.compose.navigation)
 }
