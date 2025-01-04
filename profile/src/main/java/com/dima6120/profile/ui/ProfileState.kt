@@ -24,12 +24,12 @@ sealed class ProfileState {
 }
 
 data class UserInfoUIModel(
-    val name: String,
+    val name: TextUIModel,
     val picture: String,
     val gender: GenderUIModel?,
-    val birthday: String?,
-    val location: String?,
-    val joinedAt: String,
+    val birthday: TextUIModel?,
+    val location: TextUIModel?,
+    val joinedAt: TextUIModel,
 )
 
 data class GenderUIModel(

@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 
 abstract class BaseViewModel<T>: ViewModel() {
 
-    val state by lazy { mutableStateOf(createInitialState()) }
+    val state by lazy { mutableStateOf(initialState) }
 
-    abstract fun createInitialState(): T
+    abstract val initialState: T
 
     protected inline fun updateState(updater: T.() -> T) {
         state.value = updater(state.value)

@@ -2,6 +2,7 @@ package com.dima6120.yamalc.di
 
 import android.content.Context
 import com.dima6120.anime_lists.di.AnimeListsNavGraphProviderExternalModule
+import com.dima6120.anime_title.di.AnimeTitleNavGraphProviderExternalModule
 import com.dima6120.core_api.ApplicationComponentProvider
 import com.dima6120.core_api.CoreComponentProvider
 import com.dima6120.main.di.MainNavGraphProviderExternalModule
@@ -20,7 +21,8 @@ import javax.inject.Singleton
         MainNavGraphProviderExternalModule::class,
         ProfileNavGraphProviderExternalModule::class,
         SearchNavGraphProviderExternalModule::class,
-        AnimeListsNavGraphProviderExternalModule::class
+        AnimeListsNavGraphProviderExternalModule::class,
+        AnimeTitleNavGraphProviderExternalModule::class
     ]
 )
 interface ApplicationComponent: ApplicationComponentProvider {

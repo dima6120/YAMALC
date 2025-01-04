@@ -2,6 +2,7 @@ package com.dima6120.ui
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import com.dima6120.core_api.ApplicationComponentProvider
 
@@ -38,4 +39,20 @@ data class Dimensions(
 )
 
 val LocalDimensionsProvider = staticCompositionLocalOf<Dimensions> { error("No Dimensions") }
+
+@Immutable
+data class YamalcTypography(
+    val appBarTitle: TextStyle,
+
+    val bottomItemTitle: TextStyle,
+
+    val fieldTitle: TextStyle,
+    val fieldValue: TextStyle,
+
+    val title1: TextStyle,
+
+    val body1: TextStyle,
+)
+
+val LocalYamalcTypographyProvider = staticCompositionLocalOf<YamalcTypography> { error("No Typography") }
 

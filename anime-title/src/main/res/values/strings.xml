@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="english_name_field_title">English</string>
+    <string name="japanese_name_field_title">Japanese</string>
+
+    <string name="unknown_value">\?</string>
+
+    <string name="place">#%d</string>
+
+    <string name="winter_season">Winter</string>
+    <string name="spring_season">Spring</string>
+    <string name="summer_season">Summer</string>
+    <string name="fall_season">Fall</string>
+
+    <string name="status_finished_airing">Finished</string>
+    <string name="status_currently_airing">Airing</string>
+    <string name="status_not_yet_aired">Not Yet Aired</string>
+
+    <string name="aired">%1$s to %2$s</string>
+    <string name="anime_type_and_year">%1$s, %2$s</string>
+    <string name="episodes_and_episode_duration">%1$s ep, %2$s</string>
+    <string name="season">%1$s %2$s</string>
+    <string name="duration_seconds">%d sec</string>
+    <string name="duration_minutes">%d min</string>
+    <string name="duration_hours">%d hr</string>
+    <string name="duration_hours_and_minutes">%1$d hr %2$d min</string>
+
+    <string name="type_unknown">Unknown</string>
+    <string name="type_tv">TV</string>
+    <string name="type_ova">OVA</string>
+    <string name="type_movie">Movie</string>
+    <string name="type_special">Special</string>
+    <string name="type_ona">ONA</string>
+    <string name="type_music">Music</string>
+    <string name="type_cm">CM</string>
+
+    <string name="rating_g">G</string>
+    <string name="rating_pg">PG</string>
+    <string name="rating_pg_13">PG-13</string>
+    <string name="rating_r">R</string>
+    <string name="rating_r_plus">R+</string>
+    <string name="rating_rx">Rx</string>
+
+    <string name="source_other">Other</string>
+    <string name="source_original">Original</string>
+    <string name="source_manga">Manga</string>
+    <string name="source_4_koma_manga">4-koma manga</string>
+    <string name="source_web_manga">Web manga</string>
+    <string name="source_digital_manga">Digital manga</string>
+    <string name="source_novel">Novel</string>
+    <string name="source_light_novel">Light novel</string>
+    <string name="source_visual_novel">Visual novel</string>
+    <string name="source_game">Game</string>
+    <string name="source_card_game">Card game</string>
+    <string name="source_book">Book</string>
+    <string name="source_picture_book">Picture book</string>
+    <string name="source_radio_book">Radio</string>
+    <string name="source_music">Music</string>
+
+    <string name="score_field_title">Score</string>
+    <string name="rank_field_title">Rank</string>
+    <string name="popularity_field_title">Popularity</string>
+    <string name="members_field_title">Members</string>
+
+    <string name="source_field_title">Source</string>
+    <string name="season_field_title">Season</string>
+    <string name="studios_field_title">Studios</string>
+    <string name="aired_field_title">Aired</string>
+    <string name="rating_field_title">Rating</string>
+
+    <string name="relation_type_sequel">Sequel</string>
+    <string name="relation_type_prequel">Prequel</string>
+    <string name="relation_type_alternative_setting">Alternative\nsetting</string>
+    <string name="relation_type_alternative_version">Alternative\nversion</string>
+    <string name="relation_type_side_story">Side story</string>
+    <string name="relation_type_parent_story">Parent story</string>
+    <string name="relation_type_summary">Summary</string>
+    <string name="relation_type_full_story">Full story</string>
+    <string name="relation_type_character">Character</string>
+    <string name="relation_type_other">Other</string>
+</resources>

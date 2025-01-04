@@ -1,12 +1,17 @@
 package com.dima6120.core_impl.utils
 
 import android.util.Log
+import android.util.TimeUtils
+import com.dima6120.core_api.model.Time
 import com.dima6120.core_api.utils.DateFormatter
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.min
 
 class DateFormatterImpl @Inject constructor(): DateFormatter {
 
@@ -35,9 +40,24 @@ class DateFormatterImpl @Inject constructor(): DateFormatter {
             null
         }
 
+    override fun formatTime(seconds: Long): Time {
+        check(seconds >= 0)
+
+        val hours = TimeUnit.SECONDS.toHours(seconds)
+        val minutes = TimeUnit.SECONDS.toMinutes(seconds)
+
+        return when {
+            hours != 0L && minutes != 0L -> Time.HoursAndMinutes(hours, minutes)
+            hours != 0L -> Time.Hours(hours)
+            minutes != 0L -> Time.Minutes(minutes)
+            else -> Time.Seconds(seconds)
+        }
+    }
+
     companion object {
 
         private val TAG = DateFormatterImpl::class.java.simpleName
+
         private const val DATE_PATTERN = "MMM d, yyyy"
     }
 }

@@ -15,7 +15,7 @@ class MainActivityViewModel(
     private val getTokenUseCase: GetTokenUseCase
 ): BaseViewModel<MainActivityState>() {
 
-    override fun createInitialState(): MainActivityState = MainActivityState()
+    override val initialState = MainActivityState()
 
     fun getToken(code: String) {
         viewModelScope.launch {

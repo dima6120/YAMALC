@@ -9,23 +9,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import com.dima6120.main_api.MainRoute
 import com.dima6120.splash.di.SplashComponentHolder
 import com.dima6120.splash_api.SplashRoute
-import com.dima6120.ui.ScreenWithComponent
+import com.dima6120.ui.Screen
 import de.palm.composestateevents.EventEffect
 
 @Composable
 fun SplashScreen(
-    navBackStackEntry: NavBackStackEntry,
+    id: String,
+    lifecycle: Lifecycle,
+    route: SplashRoute,
     navController: NavHostController
 ) {
 
-    ScreenWithComponent(
-        navBackStackEntry = navBackStackEntry,
+    Screen(
+        id = id,
+        lifecycle = lifecycle,
+        route = route,
         componentHolder = SplashComponentHolder
     ) {
         val viewModel = viewModel<SplashViewModel>(factory = it.provideSplashViewModelFactory())

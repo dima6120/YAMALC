@@ -55,6 +55,7 @@ dependencies {
 
     api(project(":search-api"))
     implementation(project(":ui"))
+    implementation(project(":anime-title-api"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)

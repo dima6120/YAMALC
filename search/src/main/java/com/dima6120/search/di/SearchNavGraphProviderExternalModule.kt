@@ -1,7 +1,8 @@
 package com.dima6120.search.di
 
-import com.dima6120.core_api.navigation.NavGraphProvider
-import com.dima6120.search.SearchNavGraphProviderImpl
+import com.dima6120.core_api.di.RouteKey
+import com.dima6120.core_api.navigation.ScreenProvider
+import com.dima6120.search.SearchScreenProviderImpl
 import com.dima6120.search_api.SearchRoute
 import dagger.Binds
 import dagger.Module
@@ -13,6 +14,6 @@ interface SearchNavGraphProviderExternalModule {
 
     @Binds
     @IntoMap
-    @ClassKey(SearchRoute::class)
-    fun provideSearchNavGraphProvider(impl: SearchNavGraphProviderImpl): NavGraphProvider
+    @RouteKey(SearchRoute::class)
+    fun provideSearchNavGraphProvider(impl: SearchScreenProviderImpl): ScreenProvider
 }
