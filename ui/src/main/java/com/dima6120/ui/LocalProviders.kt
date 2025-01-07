@@ -50,6 +50,7 @@ data class YamalcTypography(
     val fieldValue: TextStyle,
 
     val title1: TextStyle,
+    val title2: TextStyle,
 
     val body1: TextStyle,
 )

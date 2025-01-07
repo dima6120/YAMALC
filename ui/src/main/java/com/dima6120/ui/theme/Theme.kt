@@ -73,10 +73,17 @@ private val YamalcTypography = YamalcTypography(
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp
     ),
+
+    title2 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 14.sp
     )
 )
 

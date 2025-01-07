@@ -18,12 +18,12 @@ import com.dima6120.core_api.model.anime.AnimeId
 import com.dima6120.core_api.model.anime.AnimeSeasonModel
 import com.dima6120.core_api.model.anime.AnimeSourceModel
 import com.dima6120.core_api.model.anime.AnimeStatusModel
-import com.dima6120.core_api.model.anime.AnimeTypeModel
 import com.dima6120.core_api.model.anime.RelatedAnimeModel
 import com.dima6120.core_api.model.anime.RelationTypeModel
 import com.dima6120.core_api.ui.BaseViewModel
 import com.dima6120.core_api.utils.DateFormatter
 import com.dima6120.ui.models.TextUIModel
+import com.dima6120.ui.models.orUnknownValue
 import com.dima6120.ui.models.toErrorUIModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
@@ -86,7 +86,7 @@ class AnimeTitleViewModel(
     private fun animeDetailsOrThrow(): AnimeDetailsModel = checkNotNull(animeDetails)
 
     private fun AnimeDetailsModel.toAnimeDetailsUIModel(): AnimeDetailsUIModel {
-        val picture = listOfNotNull(
+        val pictures = listOfNotNull(
             this.mainPicture?.medium,
             *this.pictures.map { it.medium }.toTypedArray()
         )
@@ -120,7 +120,7 @@ class AnimeTitleViewModel(
 
         val typeAndYear = TextUIModel.stringResource(
             R.string.anime_type_and_year,
-            this.type.toTextUIModel(), this.season?.year.toTextUIModel()
+            TextUIModel.from(this.type), this.season?.year.toTextUIModel()
         )
 
         val episodesDuration = this.episodeDuration
@@ -134,8 +134,15 @@ class AnimeTitleViewModel(
             episodesDuration
         )
 
+        val studios =
+            if (this.studios.isEmpty()) {
+                TextUIModel.unknownValue()
+            } else {
+                this.studios.joinToString(separator = ", ") { it.name }.toTextUIModel()
+            }
+
         val animeInfo = AnimeInfoUIModel(
-            season = this.season.toTextUIModel(),
+            season = TextUIModel.from(this.season),
             status = this.status.toTextUIModel(),
             aired = aired,
             synopsys = this.synopsis.toTextUIModel(),
@@ -144,7 +151,7 @@ class AnimeTitleViewModel(
             rating = this.rating.toTextUIModel(),
             source = this.source.toTextUIModel(),
             genres = this.genres.map { it.name.toTextUIModel() },
-            studios = this.studios.joinToString(separator = ", ") { it.name }.toTextUIModel()
+            studios = studios
         )
 
         val relatedAnimeItems = this.relatedAnime
@@ -161,7 +168,7 @@ class AnimeTitleViewModel(
             }
 
         return AnimeDetailsUIModel(
-            pictures = picture,
+            pictures = pictures,
             titles = titles,
             animeStats = animeStats,
             animeInfo = animeInfo,
@@ -210,15 +217,6 @@ class AnimeTitleViewModel(
             }
         }.orUnknownValue()
 
-    private fun AnimeSeasonModel?.toTextUIModel(): TextUIModel =
-        this?.let {
-            TextUIModel.stringResource(
-                R.string.season,
-                it.season.toTextUIModel(),
-                it.year.toString()
-            )
-        }.orUnknownValue()
-
     private fun AnimeSourceModel?.toTextUIModel(): TextUIModel =
         this?.let {
             val id = when (this) {
@@ -256,21 +254,6 @@ class AnimeTitleViewModel(
             TextUIModel.stringResource(id)
         }.orUnknownValue()
 
-    private fun AnimeTypeModel.toTextUIModel(): TextUIModel {
-        val id = when (this) {
-            AnimeTypeModel.UNKNOWN -> R.string.type_unknown
-            AnimeTypeModel.TV -> R.string.type_tv
-            AnimeTypeModel.OVA -> R.string.type_ova
-            AnimeTypeModel.MOVIE -> R.string.type_movie
-            AnimeTypeModel.SPECIAL -> R.string.type_special
-            AnimeTypeModel.ONA -> R.string.type_ona
-            AnimeTypeModel.MUSIC -> R.string.type_music
-            AnimeTypeModel.CM -> R.string.type_cm
-        }
-
-        return TextUIModel.stringResource(id)
-    }
-
     private fun AnimeStatusModel?.toTextUIModel(): TextUIModel =
         this?.let {
             val id = when (it) {
@@ -299,9 +282,6 @@ class AnimeTitleViewModel(
 
     private fun Any?.toTextUIModel(): TextUIModel =
         this?.let { TextUIModel.clearText(it.toString()) }.orUnknownValue()
-
-    private fun TextUIModel?.orUnknownValue(): TextUIModel =
-        this ?: TextUIModel.stringResource(R.string.unknown_value)
 
     private fun createAnimeTitleUIModel(@StringRes language: Int, name: String): AnimeTitleUIModel =
         AnimeTitleUIModel(

@@ -7,4 +7,8 @@
     <string name="unknown_error_text">An unknown error has occurred, please try again later</string>
 
     <string name="try_again_button">Try again</string>
+
+    <string name="unknown_value">\?</string>
+    <string name="season">%1$s %2$s</string>
+    <string name="episodes">%d ep</string>
 </resources>

@@ -1,6 +1,9 @@
 package com.dima6120.main.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -10,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
@@ -48,7 +52,6 @@ fun MainScreen(
     }
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun MainScreenInternal(
     mainComponent: MainComponent,
@@ -108,17 +111,23 @@ private fun MainScreenInternal(
                 .map { it.value }
         }
 
-        NavHost(
-            navController = bottomNavController,
-            route = MainRoute::class,
-            startDestination = BottomNavItems.items.first().route
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
         ) {
-            screenProviders.forEach { screenProvider ->
-                screenProvider.get().provideDestination(
-                    lifecycle = lifecycle,
-                    navGraphBuilder = this,
-                    navController = navController
-                )
+            NavHost(
+                navController = bottomNavController,
+                route = MainRoute::class,
+                startDestination = BottomNavItems.items.first().route
+            ) {
+                screenProviders.forEach { screenProvider ->
+                    screenProvider.get().provideDestination(
+                        lifecycle = lifecycle,
+                        navGraphBuilder = this,
+                        navController = navController
+                    )
+                }
             }
         }
     }

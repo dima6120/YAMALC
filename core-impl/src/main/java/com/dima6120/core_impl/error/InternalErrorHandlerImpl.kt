@@ -2,6 +2,7 @@ package com.dima6120.core_impl.error
 
 import android.util.Log
 import com.dima6120.core_api.error.YamalcError
+import java.io.IOException
 import javax.inject.Inject
 
 class InternalErrorHandlerImpl @Inject constructor(): InternalErrorHandler {
@@ -9,7 +10,10 @@ class InternalErrorHandlerImpl @Inject constructor(): InternalErrorHandler {
     override fun handle(throwable: Throwable): YamalcError {
         Log.e(TAG, throwable.toString())
 
-        return YamalcError.Unknown(throwable) // TODO
+        return when (throwable) {
+            is IOException -> YamalcError.Network(throwable)
+            else -> YamalcError.Unknown(throwable)
+        }
     }
 
     override suspend fun <T> run(block: suspend () -> T): T =

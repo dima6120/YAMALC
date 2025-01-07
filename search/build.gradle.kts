@@ -57,11 +57,7 @@ dependencies {
     implementation(project(":ui"))
     implementation(project(":anime-title-api"))
 
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.compose.material)
+    debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)

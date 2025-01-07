@@ -6,6 +6,7 @@ import com.dima6120.core_api.model.anime.AnimeId
 import com.dima6120.core_api.model.anime.AnimeSourceModel
 import com.dima6120.core_api.model.anime.AnimeStatusModel
 import com.dima6120.core_api.model.anime.AnimeTypeModel
+import com.dima6120.core_api.model.anime.toAnimeId
 import com.dima6120.core_impl.network.model.mylist.MyListStatus
 import com.dima6120.core_impl.network.model.Picture
 import com.dima6120.core_impl.network.model.Studio
@@ -96,7 +97,7 @@ data class AnimeDetails(
 
 fun AnimeDetails.toAnimeDetailsModel(): AnimeDetailsModel =
     AnimeDetailsModel(
-        id = AnimeId(this.id),
+        id = this.id.toAnimeId(),
         mainPicture = this.mainPicture?.toPictureModel(),
         englishTitle = this.title,
         japaneseTitle = this.alternativeTitles?.japanese,
@@ -114,7 +115,7 @@ fun AnimeDetails.toAnimeDetailsModel(): AnimeDetailsModel =
         episodes = this.numEpisodes.takeIf { it != 0 },
         season = this.startSeason?.toAnimeSeasonModel(),
         source = this.source?.toAnimeSourceModel(),
-        episodeDuration = this.averageEpisodeDuration,
+        episodeDuration = this.averageEpisodeDuration?.takeIf { it != 0 },
         rating = this.rating?.toRatingModel(),
         studios = this.studios.map { it.toStudioModel() },
         pictures = this.pictures.map { it.toPictureModel() },
