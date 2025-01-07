@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavBackStackEntry
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,20 +24,25 @@ import com.dima6120.main.di.MainComponent
 import com.dima6120.main.di.MainComponentHolder
 import com.dima6120.main.navigation.BottomNavItems
 import com.dima6120.main_api.MainRoute
-import com.dima6120.ui.ScreenWithComponent
+import com.dima6120.ui.Screen
 import com.dima6120.ui.theme.YamalcColors
 
 @Composable
 fun MainScreen(
-    navBackStackEntry: NavBackStackEntry,
+    id: String,
+    lifecycle: Lifecycle,
+    route: MainRoute,
     navController: NavHostController
 ) {
-    ScreenWithComponent(
-        navBackStackEntry = navBackStackEntry,
+    Screen(
+        id = id,
+        lifecycle = lifecycle,
+        route = route,
         componentHolder = MainComponentHolder
     ) {
         MainScreenInternal(
             mainComponent = it,
+            lifecycle = lifecycle,
             navController = navController
         )
     }
@@ -47,6 +52,7 @@ fun MainScreen(
 @Composable
 private fun MainScreenInternal(
     mainComponent: MainComponent,
+    lifecycle: Lifecycle,
     navController: NavHostController
 ) {
     val bottomNavController = rememberNavController()
@@ -94,7 +100,7 @@ private fun MainScreenInternal(
             }
         }
     ) {
-        val graphs = remember {
+        val screenProviders = remember {
             val itemsRouteClasses = BottomNavItems.items.map { it.route::class.java }
 
             mainComponent.provideNavGraphProvidersMap()
@@ -107,8 +113,9 @@ private fun MainScreenInternal(
             route = MainRoute::class,
             startDestination = BottomNavItems.items.first().route
         ) {
-            graphs.forEach { graphProvider ->
-                graphProvider.get().provideNavGraph(
+            screenProviders.forEach { screenProvider ->
+                screenProvider.get().provideDestination(
+                    lifecycle = lifecycle,
                     navGraphBuilder = this,
                     navController = navController
                 )

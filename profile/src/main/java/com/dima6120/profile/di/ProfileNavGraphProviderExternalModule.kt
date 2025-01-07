@@ -1,7 +1,8 @@
 package com.dima6120.profile.di
 
-import com.dima6120.core_api.navigation.NavGraphProvider
-import com.dima6120.profile.ProfileNavGraphProviderImpl
+import com.dima6120.core_api.di.RouteKey
+import com.dima6120.core_api.navigation.ScreenProvider
+import com.dima6120.profile.ProfileScreenProviderImpl
 import com.dima6120.profile_api.ProfileRoute
 import dagger.Binds
 import dagger.Module
@@ -13,6 +14,6 @@ interface ProfileNavGraphProviderExternalModule {
 
     @Binds
     @IntoMap
-    @ClassKey(ProfileRoute::class)
-    fun provideProfileNavGraphProvider(impl: ProfileNavGraphProviderImpl): NavGraphProvider
+    @RouteKey(ProfileRoute::class)
+    fun provideProfileNavGraphProvider(impl: ProfileScreenProviderImpl): ScreenProvider
 }

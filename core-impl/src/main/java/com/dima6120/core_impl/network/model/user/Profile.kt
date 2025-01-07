@@ -1,7 +1,7 @@
 package com.dima6120.core_impl.network.model.user
 
-import com.dima6120.core_api.model.GenderModel
-import com.dima6120.core_api.model.ProfileModel
+import com.dima6120.core_api.model.profile.GenderModel
+import com.dima6120.core_api.model.profile.ProfileModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

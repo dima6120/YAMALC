@@ -5,19 +5,23 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dima6120.ui.Dimensions
 import com.dima6120.ui.LocalDimensionsProvider
+import com.dima6120.ui.LocalYamalcTypographyProvider
 import com.dima6120.ui.Padding
-import com.dima6120.ui.R
 import com.dima6120.ui.Space
+import com.dima6120.ui.YamalcTypography
 
 private val LightColors = lightColors(
     primary = YamalcColors.PrimaryColorLight,
+    primaryVariant = YamalcColors.PrimaryVariantColorLight,
     secondary = YamalcColors.SecondaryColorLight,
+    secondaryVariant = YamalcColors.SecondaryVariantColorLight,
     surface = YamalcColors.SurfaceColorLight,
     background = YamalcColors.BackgroundColorLight,
 )
@@ -43,7 +47,40 @@ private val Dimensions = Dimensions(
     )
 )
 
-object YamalcDimensions {
+private val YamalcTypography = YamalcTypography(
+    appBarTitle = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+    bottomItemTitle = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 10.sp
+    ),
+    fieldTitle = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp
+    ),
+    fieldValue = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    title1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    ),
+    body1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    )
+)
+
+object Yamalc {
 
     val padding: Padding
         @Composable
@@ -54,6 +91,11 @@ object YamalcDimensions {
         @Composable
         @ReadOnlyComposable
         get() = LocalDimensionsProvider.current.space
+
+    val type: YamalcTypography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalYamalcTypographyProvider.current
 }
 
 
@@ -61,7 +103,8 @@ object YamalcDimensions {
 fun YAMALCTheme(content: @Composable () -> Unit) {
 
     CompositionLocalProvider(
-        LocalDimensionsProvider provides Dimensions
+        LocalDimensionsProvider provides Dimensions,
+        LocalYamalcTypographyProvider provides YamalcTypography
     ) {
         MaterialTheme(
             colors = LightColors,

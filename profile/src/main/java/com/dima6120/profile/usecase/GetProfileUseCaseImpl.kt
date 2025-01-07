@@ -2,7 +2,7 @@ package com.dima6120.profile.usecase
 
 import com.dima6120.core_api.di.DispatcherIO
 import com.dima6120.core_api.error.ErrorHandler
-import com.dima6120.core_api.model.ProfileModel
+import com.dima6120.core_api.model.profile.ProfileModel
 import com.dima6120.core_api.model.UseCaseResult
 import com.dima6120.core_api.network.repository.ApiRepository
 import kotlinx.coroutines.CoroutineDispatcher

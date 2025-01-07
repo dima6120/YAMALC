@@ -18,7 +18,7 @@ import com.dima6120.ui.models.ErrorUIModel
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.text
 import com.dima6120.ui.theme.YAMALCTheme
-import com.dima6120.ui.theme.YamalcDimensions
+import com.dima6120.ui.theme.Yamalc
 
 @Composable
 fun ErrorScreen(
@@ -29,11 +29,11 @@ fun ErrorScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = YamalcDimensions.padding.xl)
+            .padding(horizontal = Yamalc.padding.xl)
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),
-            verticalArrangement = Arrangement.spacedBy(YamalcDimensions.space.s),
+            verticalArrangement = Arrangement.spacedBy(Yamalc.space.s),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

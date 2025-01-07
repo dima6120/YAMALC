@@ -9,19 +9,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavBackStackEntry
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.dima6120.anime_lists.di.AnimeListsComponentHolder
-import com.dima6120.ui.ScreenWithComponent
+import com.dima6120.anime_lists_api.AnimeListsRoute
+import com.dima6120.ui.Screen
 
 @Composable
 fun AnimeListsScreen(
-    navBackStackEntry: NavBackStackEntry,
+    id: String,
+    lifecycle: Lifecycle,
+    route: AnimeListsRoute,
     navController: NavHostController
 ) {
 
-    ScreenWithComponent(
-        navBackStackEntry = navBackStackEntry,
+    Screen(
+        id = id,
+        lifecycle = lifecycle,
+        route = route,
         componentHolder = AnimeListsComponentHolder
     ) {
 

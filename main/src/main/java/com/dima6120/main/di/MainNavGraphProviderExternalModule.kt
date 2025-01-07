@@ -1,7 +1,8 @@
 package com.dima6120.main.di
 
-import com.dima6120.core_api.navigation.NavGraphProvider
-import com.dima6120.main.MainNavGraphProviderImpl
+import com.dima6120.core_api.di.RouteKey
+import com.dima6120.core_api.navigation.ScreenProvider
+import com.dima6120.main.MainScreenProviderImpl
 import com.dima6120.main_api.MainRoute
 import dagger.Binds
 import dagger.Module
@@ -13,6 +14,6 @@ interface MainNavGraphProviderExternalModule {
 
     @Binds
     @IntoMap
-    @ClassKey(MainRoute::class)
-    fun provideMainNavGraphProvider(impl: MainNavGraphProviderImpl): NavGraphProvider
+    @RouteKey(MainRoute::class)
+    fun provideMainNavGraphProvider(impl: MainScreenProviderImpl): ScreenProvider
 }

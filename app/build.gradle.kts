@@ -80,4 +80,5 @@ dependencies {
     implementation(project(":profile"))
     implementation(project(":search"))
     implementation(project(":anime-lists"))
+    implementation(project(":anime-title"))
 }

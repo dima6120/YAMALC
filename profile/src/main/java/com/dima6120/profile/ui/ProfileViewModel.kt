@@ -6,10 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.dima6120.core_api.error.YamalcError
-import com.dima6120.core_api.model.AnimeStatisticsModel
-import com.dima6120.core_api.model.GenderModel
-import com.dima6120.core_api.model.ProfileModel
+import com.dima6120.core_api.model.profile.AnimeStatisticsModel
+import com.dima6120.core_api.model.profile.GenderModel
+import com.dima6120.core_api.model.profile.ProfileModel
 import com.dima6120.core_api.model.UseCaseResult
 import com.dima6120.core_api.utils.DateFormatter
 import com.dima6120.profile.R
@@ -17,9 +16,9 @@ import com.dima6120.profile.usecase.GetAuthorizeLinkUseCase
 import com.dima6120.profile.usecase.GetLoggedInFlowUseCase
 import com.dima6120.profile.usecase.GetProfileUseCase
 import com.dima6120.profile.usecase.LogoutUseCase
-import com.dima6120.ui.models.ErrorUIModel
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.toErrorUIModel
+import com.dima6120.ui.models.toTextUIModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
 import kotlinx.coroutines.launch
@@ -50,6 +49,31 @@ class ProfileViewModel(
         }
     }
 
+    fun loadProfile() {
+        viewModelScope.launch {
+            updateState {
+                ProfileState.Loading
+            }
+
+            when (val result = getProfileUseCase()) {
+                is UseCaseResult.Error ->
+                    updateState {
+                        ProfileState.Error(
+                            error = result.error.toErrorUIModel()
+                        )
+                    }
+
+                is UseCaseResult.Success ->
+                    updateState {
+                        ProfileState.Authorized(
+                            userInfo = result.value.toUserInfoUIModel(),
+                            animeStatistics = result.value.animeStatistics.toAnimeStatisticsUIModel()
+                        )
+                    }
+            }
+        }
+    }
+
     fun login() {
         viewModelScope.launch {
             val link = getAuthorizeLinkUseCase()
@@ -68,37 +92,14 @@ class ProfileViewModel(
         updateUnauthorizedState { copy(openLinkEvent = consumed()) }
     }
 
-    private suspend fun loadProfile() {
-        updateState {
-            ProfileState.Loading
-        }
-
-        when (val result = getProfileUseCase()) {
-            is UseCaseResult.Error ->
-                updateState {
-                    ProfileState.Error(
-                        error = result.error.toErrorUIModel()
-                    )
-                }
-
-            is UseCaseResult.Success ->
-                updateState {
-                    ProfileState.Authorized(
-                        userInfo = result.value.toUserInfoUIModel(),
-                        animeStatistics = result.value.animeStatistics.toAnimeStatisticsUIModel()
-                    )
-                }
-        }
-    }
-
     private fun ProfileModel.toUserInfoUIModel(): UserInfoUIModel =
         UserInfoUIModel(
-            name = this.name,
+            name = this.name.toTextUIModel(),
             picture = this.picture,
             gender = this.gender.toGenderUIModel(),
-            birthday = this.birthday?.let(dateFormatter::formatDate),
-            location = this.location,
-            joinedAt = this.joinedAt.let(dateFormatter::formatDateTime).orEmpty(),
+            birthday = this.birthday?.let(dateFormatter::formatDate)?.toTextUIModel(),
+            location = this.location?.toTextUIModel(),
+            joinedAt = this.joinedAt.let(dateFormatter::formatDateTime).orEmpty().toTextUIModel(),
         )
 
     private fun GenderModel.toGenderUIModel(): GenderUIModel? =

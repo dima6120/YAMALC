@@ -1,6 +1,6 @@
 package com.dima6120.core_impl.network.model.user
 
-import com.dima6120.core_api.model.AnimeStatisticsModel
+import com.dima6120.core_api.model.profile.AnimeStatisticsModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

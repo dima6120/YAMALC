@@ -9,8 +9,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.dima6120.core_api.AppWithApplicationComponent
+import com.dima6120.core_api.navigation.CustomNavTypes
+import com.dima6120.core_api.navigation.Route
 import com.dima6120.ui.LocalApplicationComponentProvider
-import com.dima6120.core_api.navigation.NavGraphProvider
+import com.dima6120.core_api.navigation.ScreenProvider
 import com.dima6120.core_api.network.repository.LoginRepository
 import com.dima6120.splash_api.SplashRoute
 import com.dima6120.yamalc.di.MainActivityComponent
@@ -22,7 +24,7 @@ import javax.inject.Provider
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var navGraphProviders: Map<Class<*>, @JvmSuppressWildcards Provider<NavGraphProvider>>
+    lateinit var screenProviders: Map<Class<out Route>, @JvmSuppressWildcards Provider<ScreenProvider>>
 
     // TEST
     @Inject
@@ -57,9 +59,12 @@ class MainActivity : ComponentActivity() {
                         // TODO
                     }
 
-                    NavHost(navController = navController, startDestination = SplashRoute) {
-                        navGraphProviders.values.forEach {
-                            it.get().provideNavGraph(
+                    NavHost(
+                        navController = navController,
+                        startDestination = SplashRoute
+                    ) {
+                        screenProviders.values.forEach { screenProvider ->
+                            screenProvider.get().provideDestination(
                                 navGraphBuilder = this,
                                 navController = navController
                             )

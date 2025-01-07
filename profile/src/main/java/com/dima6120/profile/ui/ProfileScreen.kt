@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -32,46 +31,57 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.dima6120.profile.R
 import com.dima6120.profile.di.ProfileComponentHolder
-import com.dima6120.ui.ScreenWithComponent
+import com.dima6120.profile_api.ProfileRoute
+import com.dima6120.ui.Screen
 import com.dima6120.ui.composable.ErrorScreen
+import com.dima6120.ui.composable.LoadingScreen
+import com.dima6120.ui.composable.TopAppBarButton
+import com.dima6120.ui.composable.TopAppBarTitle
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.text
 import com.dima6120.ui.theme.YAMALCTheme
 import com.dima6120.ui.theme.YamalcColors
-import com.dima6120.ui.theme.YamalcDimensions
+import com.dima6120.ui.theme.Yamalc
 import de.palm.composestateevents.EventEffect
 
 @Composable
 fun ProfileScreen(
-    navBackStackEntry: NavBackStackEntry,
+    id: String,
+    lifecycle: Lifecycle,
+    route: ProfileRoute,
     navController: NavHostController
 ) {
 
-    ScreenWithComponent(
-        navBackStackEntry = navBackStackEntry,
+    Screen(
+        id = id,
+        lifecycle = lifecycle,
+        route = route,
         componentHolder = ProfileComponentHolder
     ) {
         val viewModel = viewModel<ProfileViewModel>(factory = it.provideProfileViewModelFactory())
         val state = viewModel.state
 
         when (state) {
-            is ProfileState.Authorized -> AuthorizedScreen(
-                state,
-                onLogoutButtonClick = viewModel::logout
-            )
+            is ProfileState.Authorized ->
+                AuthorizedScreen(
+                    state,
+                    onLogoutButtonClick = viewModel::logout
+                )
+
             ProfileState.Loading -> LoadingScreen()
 
             is ProfileState.Error ->
                 ErrorScreen(
                     errorUIModel = state.error,
-                    onButtonClick = viewModel::login
+                    onButtonClick = viewModel::loadProfile
                 )
 
             is ProfileState.Unauthorized ->
@@ -105,7 +115,7 @@ private fun UnauthorizedScreen(
 
         Column(
             modifier = Modifier.align(Alignment.Center),
-            verticalArrangement = Arrangement.spacedBy(YamalcDimensions.space.s)
+            verticalArrangement = Arrangement.spacedBy(Yamalc.space.s)
         ) {
             Text(
                 style = MaterialTheme.typography.h6,
@@ -134,18 +144,13 @@ private fun AuthorizedScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = state.userInfo.name
-                    )
+                    TopAppBarTitle(title = state.userInfo.name)
                 },
                 actions = {
-                    IconButton(onClick = onLogoutButtonClick) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_logout),
-                            tint = YamalcColors.SecondaryColorLight,
-                            contentDescription = null
-                        )
-                    }
+                    TopAppBarButton(
+                        icon = R.drawable.ic_logout,
+                        onClick = onLogoutButtonClick
+                    )
                 }
             )
         }
@@ -154,9 +159,9 @@ private fun AuthorizedScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = YamalcDimensions.padding.xl)
-                .padding(top = YamalcDimensions.padding.xl),
-            verticalArrangement = Arrangement.spacedBy(YamalcDimensions.space.s)
+                .padding(horizontal = Yamalc.padding.xl)
+                .padding(top = Yamalc.padding.xl),
+            verticalArrangement = Arrangement.spacedBy(Yamalc.space.s)
         ) {
             UserInfo(userInfoUIModel = state.userInfo)
 
@@ -175,7 +180,7 @@ private fun UserInfo(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
-        horizontalArrangement = Arrangement.spacedBy(YamalcDimensions.space.s)
+        horizontalArrangement = Arrangement.spacedBy(Yamalc.space.s)
     ) {
         AsyncImage(
             modifier = Modifier.weight(1f),
@@ -185,7 +190,7 @@ private fun UserInfo(
 
         Column(
             modifier = Modifier.weight(2f),
-            verticalArrangement = Arrangement.spacedBy(YamalcDimensions.space.s)
+            verticalArrangement = Arrangement.spacedBy(Yamalc.space.s)
         ) {
             UserInfoLine(
                 icon = R.drawable.ic_joined_at,
@@ -202,7 +207,7 @@ private fun UserInfo(
             userInfoUIModel.gender?.let {
                 UserInfoLine(
                     icon = it.icon,
-                    text = it.name.text
+                    text = it.name
                 )
             }
 
@@ -220,11 +225,11 @@ private fun UserInfo(
 private fun UserInfoLine(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
-    text: String
+    text: TextUIModel
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(YamalcDimensions.space.xs)
+        horizontalArrangement = Arrangement.spacedBy(Yamalc.space.xs)
     ) {
         Icon(
             modifier = Modifier.align(Alignment.CenterVertically),
@@ -235,8 +240,8 @@ private fun UserInfoLine(
 
         Text(
             modifier = Modifier.align(Alignment.CenterVertically),
-            style = MaterialTheme.typography.subtitle1,
-            text = text
+            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Normal),
+            text = text.text
         )
     }
 }
@@ -251,7 +256,7 @@ private fun AnimeStatistics(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
-        verticalArrangement = Arrangement.spacedBy(YamalcDimensions.space.s)
+        verticalArrangement = Arrangement.spacedBy(Yamalc.space.s)
     ) {
         Row(
             modifier = Modifier
@@ -316,7 +321,7 @@ private fun AnimeValue(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(YamalcDimensions.space.xs)
+        verticalArrangement = Arrangement.spacedBy(Yamalc.space.xs)
     ) {
         Text(
             style = MaterialTheme.typography.subtitle1,
@@ -348,15 +353,15 @@ private fun UserInfoPreview() {
     YAMALCTheme {
         UserInfo(
             userInfoUIModel = UserInfoUIModel(
-                "dima6120",
+                name = TextUIModel.clearText("dima6120"),
                 picture = "https://upload.wikimedia.org/wikipedia/ru/thumb/6/62/Kermit_the_Frog.jpg/267px-Kermit_the_Frog.jpg",
                 gender = GenderUIModel(
                     icon = R.drawable.ic_male,
                     name = TextUIModel.stringResource(R.string.male_gender)
                 ),
-                birthday = "Apr 11, 1994",
-                location = "Russia",
-                joinedAt = "Jul 18, 2011"
+                birthday = TextUIModel.clearText("Apr 11, 1994"),
+                location = TextUIModel.clearText("Russia"),
+                joinedAt = TextUIModel.clearText("Jul 18, 2011")
             )
         )
     }
@@ -387,16 +392,7 @@ private fun UserInfoLinePreview() {
     YAMALCTheme {
         UserInfoLine(
             icon = R.drawable.ic_joined_at,
-            text = "Jul 18, 2011"
-        )
-    }
-}
-
-@Composable
-private fun LoadingScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center)
+            text = TextUIModel.clearText("Jul 18, 2011")
         )
     }
 }
