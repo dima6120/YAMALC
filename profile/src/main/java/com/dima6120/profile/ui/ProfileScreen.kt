@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -25,12 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
@@ -43,7 +40,7 @@ import com.dima6120.profile_api.ProfileRoute
 import com.dima6120.ui.Screen
 import com.dima6120.ui.composable.ErrorScreen
 import com.dima6120.ui.composable.LoadingScreen
-import com.dima6120.ui.composable.TopAppBarButton
+import com.dima6120.ui.composable.IconButton
 import com.dima6120.ui.composable.TopAppBarTitle
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.text
@@ -147,7 +144,7 @@ private fun AuthorizedScreen(
                     TopAppBarTitle(title = state.userInfo.name)
                 },
                 actions = {
-                    TopAppBarButton(
+                    IconButton(
                         icon = R.drawable.ic_logout,
                         onClick = onLogoutButtonClick
                     )

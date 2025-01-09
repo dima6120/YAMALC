@@ -60,7 +60,7 @@ import com.dima6120.core_api.model.anime.AnimeId
 import com.dima6120.ui.Screen
 import com.dima6120.ui.composable.ErrorScreen
 import com.dima6120.ui.composable.LoadingScreen
-import com.dima6120.ui.composable.TopAppBarButton
+import com.dima6120.ui.composable.IconButton
 import com.dima6120.ui.composable.TopAppBarTitle
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.text
@@ -106,13 +106,13 @@ fun AnimeTitleScreen(
                         }
                     },
                     navigationIcon = {
-                        TopAppBarButton(
+                        IconButton(
                             icon = com.dima6120.ui.R.drawable.ic_arrow_back,
                             onClick = navController::navigateUp
                         )
                     },
                     actions = {
-                        TopAppBarButton(
+                        IconButton(
                             icon = R.drawable.ic_open_in_browser,
                             onClick = viewModel::openAnimeInBrowser
                         )
@@ -621,7 +621,7 @@ private fun ScoreLine(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_score),
+                imageVector = ImageVector.vectorResource(id = com.dima6120.ui.R.drawable.ic_score),
                 tint = YamalcColors.Gray5C,
                 contentDescription = null
             )

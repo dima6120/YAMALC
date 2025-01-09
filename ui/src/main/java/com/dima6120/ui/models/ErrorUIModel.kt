@@ -9,6 +9,19 @@ data class ErrorUIModel(
     val button: TextUIModel
 )
 
+fun YamalcError.toTextUIModel(): TextUIModel {
+    val id = when (this) {
+        is YamalcError.Network -> R.string.network_error_title
+        is YamalcError.BadRequest,
+        is YamalcError.Forbidden,
+        is YamalcError.NotFound,
+        is YamalcError.Unauthorized,
+        is YamalcError.Unknown -> R.string.unknown_error_title
+    }
+
+    return TextUIModel.stringResource(id)
+}
+
 fun YamalcError.toErrorUIModel(): ErrorUIModel {
     val title: TextUIModel
     val text: TextUIModel
