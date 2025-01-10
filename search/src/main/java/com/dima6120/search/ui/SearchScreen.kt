@@ -172,16 +172,17 @@ fun SearchScreen(
 
                     SearchResults.Loading -> LoadingScreen()
 
-                    is SearchResults.Results -> AnimeItemList(
-                        items = state.searchResults.items,
-                        onAnimeItemClick = { animeId ->
-                            navController.navigate(
-                                AnimeTitleRoute(animeId)
-                            )
-                        },
-                        onLoadNextPage = viewModel::nextPage,
-                        onRetryLoadPageClick = viewModel::nextPage
-                    )
+                    is SearchResults.Results ->
+                        AnimeItemList(
+                            items = state.searchResults.items,
+                            onAnimeItemClick = { animeId ->
+                                navController.navigate(
+                                    AnimeTitleRoute(animeId)
+                                )
+                            },
+                            onLoadNextPage = viewModel::nextPage,
+                            onRetryLoadPageClick = viewModel::nextPage
+                        )
                 }
             }
         }
@@ -308,6 +309,8 @@ private fun AnimeInfo(
         ) {
             Text(
                 text = item.title.text,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 style = Yamalc.type.title2,
                 color = YamalcColors.Black
             )

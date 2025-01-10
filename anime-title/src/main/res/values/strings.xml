@@ -10,10 +10,6 @@
     <string name="summer_season">Summer</string>
     <string name="fall_season">Fall</string>
 
-    <string name="status_finished_airing">Finished</string>
-    <string name="status_currently_airing">Airing</string>
-    <string name="status_not_yet_aired">Not Yet Aired</string>
-
     <string name="aired">%1$s to %2$s</string>
     <string name="anime_type_and_year">%1$s, %2$s</string>
     <string name="episodes_and_episode_duration">%1$s ep, %2$s</string>

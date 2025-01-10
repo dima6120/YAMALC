@@ -124,7 +124,7 @@ private fun UnauthorizedScreen(
                 onClick = onLoginButtonClick
             ) {
                 Text(
-                    text = stringResource(id = R.string.login_button)
+                    text = stringResource(id = com.dima6120.ui.R.string.login_button)
                 )
             }
         }

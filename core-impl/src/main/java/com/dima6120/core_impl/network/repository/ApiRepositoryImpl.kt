@@ -3,6 +3,8 @@ package com.dima6120.core_impl.network.repository
 import com.dima6120.core_api.model.anime.AnimeBriefDetailsModel
 import com.dima6120.core_api.model.anime.AnimeDetailsModel
 import com.dima6120.core_api.model.anime.AnimeId
+import com.dima6120.core_api.model.mylist.ListStatusModel
+import com.dima6120.core_api.model.mylist.MyListAnimeModel
 import com.dima6120.core_api.model.profile.ProfileModel
 import com.dima6120.core_api.network.repository.ApiRepository
 import com.dima6120.core_impl.error.InternalErrorHandler
@@ -10,6 +12,8 @@ import com.dima6120.core_impl.network.model.anime.AnimeBriefDetails
 import com.dima6120.core_impl.network.model.anime.AnimeDetails
 import com.dima6120.core_impl.network.model.anime.toAnimeBriefDetailsModel
 import com.dima6120.core_impl.network.model.anime.toAnimeDetailsModel
+import com.dima6120.core_impl.network.model.mylist.toMyAnimeListModel
+import com.dima6120.core_impl.network.model.mylist.toStringValue
 import com.dima6120.core_impl.network.model.user.toProfileModel
 import com.dima6120.core_impl.network.service.ApiService
 import kotlinx.serialization.SerialName
@@ -45,7 +49,23 @@ class ApiRepositoryImpl @Inject constructor(
             ).data.map { it.animeBriefDetails.toAnimeBriefDetailsModel() }
         }
 
+    override suspend fun getMyAnimeList(status: ListStatusModel, page: Int): List<MyListAnimeModel> =
+        internalErrorHandler.run {
+            apiService.getUserAnimeList(
+                user = CURRENT_USER,
+                status = status.toStringValue(),
+                sort = ANIME_SORT,
+                limit = ANIME_LIST_PAGE_LIMIT,
+                offset = page * ANIME_LIST_PAGE_LIMIT,
+                fields = ANIME_BRIEF_DETAILS_FIELS
+            ).data.map { it.toMyAnimeListModel() }
+        }
+
     companion object {
+
+        private val CURRENT_USER = "@me"
+
+        private val ANIME_SORT = "anime_title"
 
         private val ANIME_LIST_PAGE_LIMIT = 15
 
