@@ -1,8 +1,8 @@
-package com.dima6120.profile.usecase
+package com.dima6120.core_impl.usecase
 
 import com.dima6120.core_api.network.repository.LoginRepository
+import com.dima6120.core_api.usecase.GetLoggedInFlowUseCase
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetLoggedInFlowUseCaseImpl @Inject constructor(

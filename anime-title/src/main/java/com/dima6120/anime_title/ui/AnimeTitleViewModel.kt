@@ -10,14 +10,11 @@ import androidx.lifecycle.viewModelScope
 import com.dima6120.anime_title.R
 import com.dima6120.anime_title.usecase.GetAnimeDetailsUseCase
 import com.dima6120.core_api.model.RatingModel
-import com.dima6120.core_api.model.SeasonModel
 import com.dima6120.core_api.model.Time
 import com.dima6120.core_api.model.UseCaseResult
 import com.dima6120.core_api.model.anime.AnimeDetailsModel
 import com.dima6120.core_api.model.anime.AnimeId
-import com.dima6120.core_api.model.anime.AnimeSeasonModel
 import com.dima6120.core_api.model.anime.AnimeSourceModel
-import com.dima6120.core_api.model.anime.AnimeStatusModel
 import com.dima6120.core_api.model.anime.RelatedAnimeModel
 import com.dima6120.core_api.model.anime.RelationTypeModel
 import com.dima6120.core_api.ui.BaseViewModel
@@ -143,7 +140,7 @@ class AnimeTitleViewModel(
 
         val animeInfo = AnimeInfoUIModel(
             season = TextUIModel.from(this.season),
-            status = this.status.toTextUIModel(),
+            status = TextUIModel.from(this.status),
             aired = aired,
             synopsys = this.synopsis.toTextUIModel(),
             typeAndYear = typeAndYear,
@@ -249,29 +246,6 @@ class AnimeTitleViewModel(
                 RatingModel.R -> R.string.rating_r
                 RatingModel.R_PLUS -> R.string.rating_r_plus
                 RatingModel.RX -> R.string.rating_rx
-            }
-
-            TextUIModel.stringResource(id)
-        }.orUnknownValue()
-
-    private fun AnimeStatusModel?.toTextUIModel(): TextUIModel =
-        this?.let {
-            val id = when (it) {
-                AnimeStatusModel.NOT_YET_AIRED -> R.string.status_not_yet_aired
-                AnimeStatusModel.CURRENTLY_AIRING -> R.string.status_currently_airing
-                AnimeStatusModel.FINISHED_AIRING -> R.string.status_finished_airing
-            }
-
-            TextUIModel.stringResource(id)
-        }.orUnknownValue()
-
-    private fun SeasonModel?.toTextUIModel(): TextUIModel =
-        this?.let {
-            val id = when (it) {
-                SeasonModel.WINTER -> R.string.winter_season
-                SeasonModel.SPRING -> R.string.spring_season
-                SeasonModel.SUMMER -> R.string.summer_season
-                SeasonModel.FALL -> R.string.fall_season
             }
 
             TextUIModel.stringResource(id)

@@ -14,7 +14,8 @@ import javax.inject.Singleton
         StorageModule::class,
         SecurityModule::class,
         UtilsModule::class,
-        DispatchersModule::class
+        DispatchersModule::class,
+        UseCaseModule::class
     ]
 )
 interface CoreComponent: CoreComponentProvider {

@@ -6,7 +6,9 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.stringResource
 import com.dima6120.core_api.model.SeasonModel
 import com.dima6120.core_api.model.anime.AnimeSeasonModel
+import com.dima6120.core_api.model.anime.AnimeStatusModel
 import com.dima6120.core_api.model.anime.AnimeTypeModel
+import com.dima6120.core_api.model.mylist.ListStatusModel
 import com.dima6120.ui.R
 
 sealed class TextUIModel {
@@ -62,6 +64,30 @@ sealed class TextUIModel {
                 from(animeSeasonModel.season),
                 animeSeasonModel.year.toString()
             )
+        }
+
+        fun from(listStatusModel: ListStatusModel): TextUIModel {
+            val id = when (listStatusModel) {
+                ListStatusModel.WATCHING -> R.string.watching
+                ListStatusModel.COMPLETED -> R.string.completed
+                ListStatusModel.ON_HOLD -> R.string.on_hold
+                ListStatusModel.DROPPED -> R.string.dropped
+                ListStatusModel.PLAN_TO_WATCH -> R.string.plan_to_watch
+            }
+
+            return stringResource(id)
+        }
+
+        fun from(animeStatusModel: AnimeStatusModel?): TextUIModel {
+            animeStatusModel ?: return unknownValue()
+
+            val id = when (animeStatusModel) {
+                AnimeStatusModel.NOT_YET_AIRED -> com.dima6120.ui.R.string.status_not_yet_aired
+                AnimeStatusModel.CURRENTLY_AIRING -> com.dima6120.ui.R.string.status_currently_airing
+                AnimeStatusModel.FINISHED_AIRING -> com.dima6120.ui.R.string.status_finished_airing
+            }
+
+            return stringResource(id)
         }
     }
 }

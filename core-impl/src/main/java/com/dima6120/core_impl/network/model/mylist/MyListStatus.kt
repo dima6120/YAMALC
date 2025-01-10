@@ -42,3 +42,12 @@ fun String.toListStatusModel(): ListStatusModel? =
         "plan_to_watch" -> ListStatusModel.PLAN_TO_WATCH
         else -> null
     }
+
+fun ListStatusModel.toStringValue(): String =
+    when (this) {
+        ListStatusModel.WATCHING -> "watching"
+        ListStatusModel.COMPLETED -> "completed"
+        ListStatusModel.ON_HOLD -> "on_hold"
+        ListStatusModel.DROPPED -> "dropped"
+        ListStatusModel.PLAN_TO_WATCH -> "plan_to_watch"
+    }

@@ -12,8 +12,8 @@ import com.dima6120.core_api.model.profile.ProfileModel
 import com.dima6120.core_api.model.UseCaseResult
 import com.dima6120.core_api.utils.DateFormatter
 import com.dima6120.profile.R
-import com.dima6120.profile.usecase.GetAuthorizeLinkUseCase
-import com.dima6120.profile.usecase.GetLoggedInFlowUseCase
+import com.dima6120.core_api.usecase.GetAuthorizeLinkUseCase
+import com.dima6120.core_api.usecase.GetLoggedInFlowUseCase
 import com.dima6120.profile.usecase.GetProfileUseCase
 import com.dima6120.profile.usecase.LogoutUseCase
 import com.dima6120.ui.models.TextUIModel

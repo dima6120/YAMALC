@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="status_finished_airing">Finished</string>
+    <string name="status_currently_airing">Airing</string>
+    <string name="status_not_yet_aired">Not Yet Aired</string>
+
+</resources>

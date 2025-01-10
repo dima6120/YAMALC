@@ -47,15 +47,23 @@ class SearchScreenViewModel(
     }
 
     fun search(query: String) {
-        updateState { copy(query = query) }
+        if (query.isBlank()) {
+            return
+        }
+
+        updateState { copy(query = query.trim()) }
 
         search()
     }
 
     fun search() {
+        if (state.value.query.isBlank()) {
+            return
+        }
+
         resetSearch()
 
-        queries.add(state.value.query)
+        queries.add(state.value.query.trim())
 
         updateState {
             copy(queries = this@SearchScreenViewModel.queries.reversed())
@@ -117,6 +125,8 @@ class SearchScreenViewModel(
                     )
 
                     updateResults()
+
+                    currentPage = page
                 }
 
                 is UseCaseResult.Error ->
@@ -134,7 +144,6 @@ class SearchScreenViewModel(
                     }
             }
 
-            currentPage = page
             loadPageJob = null
         }
     }

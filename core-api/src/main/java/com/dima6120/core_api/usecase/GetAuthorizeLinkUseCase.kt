@@ -1,4 +1,4 @@
-package com.dima6120.profile.usecase
+package com.dima6120.core_api.usecase
 
 interface GetAuthorizeLinkUseCase {
 
