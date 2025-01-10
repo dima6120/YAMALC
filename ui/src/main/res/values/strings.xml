@@ -11,5 +11,5 @@
 
     <string name="unknown_value">\?</string>
     <string name="season">%1$s %2$s</string>
-    <string name="episodes">%d ep</string>
+    <string name="episodes">%s ep</string>
 </resources>

@@ -55,6 +55,7 @@ dependencies {
 
     api(project(":anime-title-api"))
     implementation(project(":ui"))
+    implementation(project(":edit-anime-list-entry-api"))
 
     debugImplementation(libs.androidx.ui.tooling)
 

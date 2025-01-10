@@ -2,7 +2,9 @@ package com.dima6120.core_api.model.anime
 
 import com.dima6120.core_api.model.PictureModel
 import com.dima6120.core_api.model.mylist.MyListStatusModel
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AnimeBriefDetailsModel(
     val id: AnimeId,
     val title: String,

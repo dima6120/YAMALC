@@ -7,11 +7,16 @@ import com.dima6120.anime_lists.R
 import com.dima6120.anime_lists.usecase.GetAnimeStatisticsUseCase
 import com.dima6120.anime_lists.usecase.GetMyAnimeListUseCase
 import com.dima6120.core_api.model.UseCaseResult
+import com.dima6120.core_api.model.anime.AnimeId
+import com.dima6120.core_api.model.mylist.AnimeListEntryUpdateModel
 import com.dima6120.core_api.model.mylist.ListStatusModel
 import com.dima6120.core_api.model.mylist.MyListAnimeModel
 import com.dima6120.core_api.ui.BaseViewModel
 import com.dima6120.core_api.usecase.GetAuthorizeLinkUseCase
+import com.dima6120.core_api.usecase.GetDeletedAnimeListEntryFlowUseCase
 import com.dima6120.core_api.usecase.GetLoggedInFlowUseCase
+import com.dima6120.core_api.usecase.GetUpdatedAnimeListEntryFlowUseCase
+import com.dima6120.edit_anime_list_entry_api.EditAnimeListEntryRoute
 import com.dima6120.ui.models.ListItemUIModel
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.orUnknownValue
@@ -27,7 +32,9 @@ class AnimeListsViewModel(
     private val getAuthorizeLinkUseCase: GetAuthorizeLinkUseCase,
     private val getLoggedInFlowUseCase: GetLoggedInFlowUseCase,
     private val getAnimeStatisticsUseCase: GetAnimeStatisticsUseCase,
-    private val getMyAnimeListUseCase: GetMyAnimeListUseCase
+    private val getMyAnimeListUseCase: GetMyAnimeListUseCase,
+    private val getUpdatedAnimeListEntryFlowUseCase: GetUpdatedAnimeListEntryFlowUseCase,
+    private val getDeletedAnimeListEntryFlowUseCase: GetDeletedAnimeListEntryFlowUseCase
 ): BaseViewModel<AnimeListsState>() {
 
     override val initialState: AnimeListsState = AnimeListsState.Loading
@@ -46,6 +53,14 @@ class AnimeListsViewModel(
                     }
                 }
         }
+
+        viewModelScope.launch {
+            getUpdatedAnimeListEntryFlowUseCase().collect(::updateLists)
+        }
+
+        viewModelScope.launch {
+            getDeletedAnimeListEntryFlowUseCase().collect(::deleteAnimeListEntry)
+        }
     }
 
     fun activeAnimeListChanged(index: Int) {
@@ -55,6 +70,31 @@ class AnimeListsViewModel(
 
         if (animeLists[index].state == AnimeListInternalState.NOT_LOADED) {
             nextActiveAnimeListPage()
+        }
+    }
+
+    fun openEditAnimeListEntryScreen(animeId: AnimeId) {
+        updateSubstate<AnimeListsState.Authorized> {
+            val animeListIndex = this.activeAnimeListIndex
+            val myListAnimeModel =
+                this@AnimeListsViewModel.animeLists[animeListIndex].list
+                    .find { it.anime.id == animeId }
+                    ?: return
+
+            copy(
+                openEditAnimeListEntryScreenEvent = triggered(
+                    EditAnimeListEntryRoute(
+                        animeBriefDetailsModel = myListAnimeModel.anime,
+                        myListStatusModel = myListAnimeModel.status
+                    )
+                )
+            )
+        }
+    }
+
+    fun openEditAnimeListEntryScreenEventConsumed() {
+        updateSubstate<AnimeListsState.Authorized> {
+            copy(openEditAnimeListEntryScreenEvent = consumed())
         }
     }
 
@@ -99,6 +139,111 @@ class AnimeListsViewModel(
                 status = animeList.status,
                 index = animeListIndex
             )
+        }
+    }
+
+    private fun findMyListAnimeModel(animeId: AnimeId): MyListAnimeModel? {
+        var myListAnimeModel: MyListAnimeModel? = null
+        var index = 0
+
+        while (myListAnimeModel == null && index < animeLists.lastIndex) {
+            val animeList = animeLists[index]
+
+            myListAnimeModel = animeList.list.find { it.anime.id == animeId }
+
+            index++
+        }
+
+        return myListAnimeModel
+    }
+
+    private fun deleteAnimeListEntry(animeId: AnimeId) {
+        val myListAnimeModel = findMyListAnimeModel(animeId)
+
+        if (myListAnimeModel != null) {
+            val animeListIndex = myListAnimeModel.status.status!!.ordinal
+            val animeList = animeLists[animeListIndex]
+
+            animeList.list -= myListAnimeModel
+            animeList.count--
+
+            updateSubstate<AnimeListsState.Authorized> {
+                copy(
+                    animeLists = animeLists.map {
+                        if (it.status == animeList.status) {
+                            animeList.toAnimeListUIModel()
+                        } else {
+                            it
+                        }
+                    }
+                )
+            }
+        } else {
+            reloadAnimeLists()
+        }
+    }
+
+    private fun updateLists(updateModel: AnimeListEntryUpdateModel) {
+        val myListAnimeModel = findMyListAnimeModel(updateModel.animeId )
+
+        if (myListAnimeModel != null) {
+            val oldAnimeListIndex = myListAnimeModel.status.status!!.ordinal
+            val newAnimeListIndex = updateModel.status.ordinal
+            val oldAnimeList = animeLists[oldAnimeListIndex]
+
+            if (oldAnimeListIndex == newAnimeListIndex) {
+                oldAnimeList.list = oldAnimeList.list.map {
+                    if (it == myListAnimeModel) {
+                        myListAnimeModel.copy(
+                            status = myListAnimeModel.status.copy(
+                                score = updateModel.score,
+                                episodesWatched = updateModel.episodesWatched
+                            )
+                        )
+                    } else {
+                        it
+                    }
+                }
+                
+                updateSubstate<AnimeListsState.Authorized> {
+                    copy(
+                        animeLists = animeLists.map { 
+                            if (it.status == oldAnimeList.status) {
+                                oldAnimeList.toAnimeListUIModel()
+                            } else {
+                                it
+                            }
+                        }
+                    )
+                }
+            } else {
+                oldAnimeList.count--
+                oldAnimeList.list = oldAnimeList.list
+                    .toMutableList()
+                    .apply {
+                        this.remove(myListAnimeModel)
+                    }
+                    .toList()
+
+                val newAnimeList = animeLists[newAnimeListIndex]
+
+                newAnimeList.count++
+                newAnimeList.reset()
+
+                updateSubstate<AnimeListsState.Authorized> {
+                    copy(
+                        animeLists = animeLists.map {
+                            when (it.status) {
+                                oldAnimeList.status -> oldAnimeList.toAnimeListUIModel()
+                                newAnimeList.status -> newAnimeList.toAnimeListUIModel()
+                                else -> it
+                            }
+                        }
+                    )
+                }
+            }
+        } else {
+            reloadAnimeLists()
         }
     }
 
@@ -209,6 +354,11 @@ class AnimeListsViewModel(
             }
         }
     }
+    
+    private fun reloadAnimeLists() {
+        animeLists.forEach { it.reset() }
+        initialAnimeListLoad()
+    }
 
     private fun MyListAnimeModel.toAnimeListEntryUIModel(): AnimeListEntryUIModel {
         val episodes = this.anime.episodes
@@ -239,7 +389,10 @@ class AnimeListsViewModel(
                 TextUIModel.from(this.status),
                 this.count
             ),
-            status = this.status
+            status = this.status,
+            entries = this.list
+                .map { ListItemUIModel.Item(it.toAnimeListEntryUIModel()) }
+                .ifEmpty { listOf(ListItemUIModel.Loading) }
         )
 
     private enum class AnimeListInternalState {
@@ -256,12 +409,21 @@ class AnimeListsViewModel(
         var list: List<MyListAnimeModel> = emptyList()
     )
 
+
+    private fun AnimeListInternal.reset() {
+        this.state = AnimeListInternalState.NOT_LOADED
+        this.page = 0
+        this.list = emptyList()
+    }
+
     @Suppress("UNCHECKED_CAST")
     class Factory @Inject constructor(
         private val getAuthorizeLinkUseCase: GetAuthorizeLinkUseCase,
         private val getLoggedInFlowUseCase: GetLoggedInFlowUseCase,
         private val getAnimeStatisticsUseCase: GetAnimeStatisticsUseCase,
-        private val getMyAnimeListUseCase: GetMyAnimeListUseCase
+        private val getMyAnimeListUseCase: GetMyAnimeListUseCase,
+        private val getUpdatedAnimeListEntryFlowUseCase: GetUpdatedAnimeListEntryFlowUseCase,
+        private val getDeletedAnimeListEntryFlowUseCase: GetDeletedAnimeListEntryFlowUseCase
     ): ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -269,7 +431,9 @@ class AnimeListsViewModel(
                 getAuthorizeLinkUseCase = getAuthorizeLinkUseCase,
                 getLoggedInFlowUseCase = getLoggedInFlowUseCase,
                 getAnimeStatisticsUseCase = getAnimeStatisticsUseCase,
-                getMyAnimeListUseCase = getMyAnimeListUseCase
+                getMyAnimeListUseCase = getMyAnimeListUseCase,
+                getUpdatedAnimeListEntryFlowUseCase = getUpdatedAnimeListEntryFlowUseCase,
+                getDeletedAnimeListEntryFlowUseCase = getDeletedAnimeListEntryFlowUseCase
             ) as T
     }
 }

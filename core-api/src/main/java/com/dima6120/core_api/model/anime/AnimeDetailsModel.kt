@@ -30,3 +30,17 @@ data class AnimeDetailsModel(
     val pictures: List<PictureModel>,
     val relatedAnime: List<RelatedAnimeModel>
 )
+
+fun AnimeDetailsModel.toAnimeBriefDetailsModel(): AnimeBriefDetailsModel =
+    AnimeBriefDetailsModel(
+        id = this.id,
+        title = this.englishTitle,
+        mainPicture = this.mainPicture,
+        type = this.type,
+        season = this.season,
+        status = this.status,
+        episodes = this.episodes,
+        members = this.members,
+        score = this.score,
+        myListStatus = this.myListStatus
+    )

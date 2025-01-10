@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="save_button">Save</string>
+    <string name="remove_button">Remove</string>
+    <string name="edit_anime_list_entry_status_title">Status</string>
+    <string name="edit_anime_list_entry_progress_title">Progress</string>
+    <string name="edit_anime_list_entry_score_title">Score</string>
+</resources>

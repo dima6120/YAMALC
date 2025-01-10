@@ -17,8 +17,14 @@ import com.dima6120.core_api.model.anime.AnimeId
 import com.dima6120.core_api.model.anime.AnimeSourceModel
 import com.dima6120.core_api.model.anime.RelatedAnimeModel
 import com.dima6120.core_api.model.anime.RelationTypeModel
+import com.dima6120.core_api.model.anime.toAnimeBriefDetailsModel
+import com.dima6120.core_api.model.mylist.AnimeListEntryUpdateModel
+import com.dima6120.core_api.model.mylist.orNewEntry
 import com.dima6120.core_api.ui.BaseViewModel
+import com.dima6120.core_api.usecase.GetDeletedAnimeListEntryFlowUseCase
+import com.dima6120.core_api.usecase.GetUpdatedAnimeListEntryFlowUseCase
 import com.dima6120.core_api.utils.DateFormatter
+import com.dima6120.edit_anime_list_entry_api.EditAnimeListEntryRoute
 import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.orUnknownValue
 import com.dima6120.ui.models.toErrorUIModel
@@ -30,6 +36,8 @@ import javax.inject.Inject
 class AnimeTitleViewModel(
     private val animeId: AnimeId,
     private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase,
+    private val getUpdatedAnimeListEntryFlowUseCase: GetUpdatedAnimeListEntryFlowUseCase,
+    private val getDeletedAnimeListEntryFlowUseCase: GetDeletedAnimeListEntryFlowUseCase,
     private val dateFormatter: DateFormatter
 ): BaseViewModel<AnimeTitleState>() {
 
@@ -42,6 +50,63 @@ class AnimeTitleViewModel(
 
     init {
         loadAnimeDetails()
+
+        viewModelScope.launch {
+            getUpdatedAnimeListEntryFlowUseCase()
+                .collect { updateModel ->
+                    animeDetails?.let {
+                        if (it.id == updateModel.animeId) {
+                            animeDetails = it.copy(
+                                myListStatus = it.myListStatus?.copy(
+                                    status = updateModel.status,
+                                    score = updateModel.score,
+                                    episodesWatched = updateModel.episodesWatched
+                                )
+                            )
+
+                            updateSubstate<AnimeTitleState.AnimeDetails> {
+                                copy(listStatusModel = updateModel.status)
+                            }
+                        }
+                    }
+                }
+        }
+
+        viewModelScope.launch {
+            getDeletedAnimeListEntryFlowUseCase()
+                .collect { animeId ->
+                    animeDetails?.let {
+                        if (it.id == animeId) {
+                            animeDetails = it.copy(myListStatus = null)
+
+                            updateSubstate<AnimeTitleState.AnimeDetails> {
+                                copy(listStatusModel = null)
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    fun openEditAnimeListEntryScreen() {
+        val animeDetails = animeDetailsOrThrow()
+
+        updateSubstate<AnimeTitleState.AnimeDetails> {
+            copy(
+                openEditAnimeListEntryScreenEvent = triggered(
+                    EditAnimeListEntryRoute(
+                        animeBriefDetailsModel = animeDetails.toAnimeBriefDetailsModel(),
+                        myListStatusModel = animeDetails.myListStatus.orNewEntry()
+                    )
+                )
+            )
+        }
+    }
+
+    fun openEditAnimeListEntryScreenEventConsumed() {
+        updateSubstate<AnimeTitleState.AnimeDetails> {
+            copy(openEditAnimeListEntryScreenEvent = consumed())
+        }
     }
 
     fun loadAnimeDetails() {
@@ -56,7 +121,10 @@ class AnimeTitleViewModel(
                     animeDetails = result.value
 
                     updateState {
-                        AnimeTitleState.AnimeDetails(animeDetailsOrThrow().toAnimeDetailsUIModel())
+                        AnimeTitleState.AnimeDetails(
+                            listStatusModel = result.value.myListStatus?.status,
+                            animeDetails = result.value.toAnimeDetailsUIModel()
+                        )
                     }
                 }
             }
@@ -272,6 +340,8 @@ class AnimeTitleViewModel(
     class Factory @Inject constructor(
         private val animeId: Int,
         private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase,
+        private val getUpdatedAnimeListEntryFlowUseCase: GetUpdatedAnimeListEntryFlowUseCase,
+        private val getDeletedAnimeListEntryFlowUseCase: GetDeletedAnimeListEntryFlowUseCase,
         private val dateFormatter: DateFormatter
     ): ViewModelProvider.Factory {
 
@@ -279,6 +349,8 @@ class AnimeTitleViewModel(
              AnimeTitleViewModel(
                  animeId = AnimeId(animeId),
                  getAnimeDetailsUseCase = getAnimeDetailsUseCase,
+                 getUpdatedAnimeListEntryFlowUseCase = getUpdatedAnimeListEntryFlowUseCase,
+                 getDeletedAnimeListEntryFlowUseCase = getDeletedAnimeListEntryFlowUseCase,
                  dateFormatter = dateFormatter
              ) as T
     }

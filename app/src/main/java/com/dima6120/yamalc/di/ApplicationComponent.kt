@@ -5,6 +5,7 @@ import com.dima6120.anime_lists.di.AnimeListsNavGraphProviderExternalModule
 import com.dima6120.anime_title.di.AnimeTitleNavGraphProviderExternalModule
 import com.dima6120.core_api.ApplicationComponentProvider
 import com.dima6120.core_api.CoreComponentProvider
+import com.dima6120.edit_anime_list_entry.di.EditAnimeListEntryNavGraphProviderExternalModule
 import com.dima6120.main.di.MainNavGraphProviderExternalModule
 import com.dima6120.profile.di.ProfileNavGraphProviderExternalModule
 import com.dima6120.search.di.SearchNavGraphProviderExternalModule
@@ -22,7 +23,8 @@ import javax.inject.Singleton
         ProfileNavGraphProviderExternalModule::class,
         SearchNavGraphProviderExternalModule::class,
         AnimeListsNavGraphProviderExternalModule::class,
-        AnimeTitleNavGraphProviderExternalModule::class
+        AnimeTitleNavGraphProviderExternalModule::class,
+        EditAnimeListEntryNavGraphProviderExternalModule::class
     ]
 )
 interface ApplicationComponent: ApplicationComponentProvider {

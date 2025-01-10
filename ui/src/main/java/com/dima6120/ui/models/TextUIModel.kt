@@ -1,5 +1,6 @@
 package com.dima6120.ui.models
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -106,6 +107,18 @@ val TextUIModel.text: String
                 stringResource(id = this.id, *args.toTypedArray())
             }
         }
+
+fun TextUIModel.text(context: Context): String =
+    when (this) {
+        is TextUIModel.ClearText -> this.text
+        is TextUIModel.StringResource -> {
+            val args = this.args.map { arg ->
+                if (arg is TextUIModel) arg.text(context) else arg
+            }
+
+            context.getString(this.id, *args.toTypedArray())
+        }
+    }
 
 fun TextUIModel?.orUnknownValue(): TextUIModel = this ?: TextUIModel.unknownValue()
 

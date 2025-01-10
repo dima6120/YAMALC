@@ -14,6 +14,7 @@ import com.dima6120.core_api.navigation.Route
 import com.dima6120.ui.LocalApplicationComponentProvider
 import com.dima6120.core_api.navigation.ScreenProvider
 import com.dima6120.core_api.network.repository.LoginRepository
+import com.dima6120.main_api.MainRoute
 import com.dima6120.splash_api.SplashRoute
 import com.dima6120.yamalc.di.MainActivityComponent
 import com.dima6120.ui.theme.YAMALCTheme
@@ -45,7 +46,6 @@ class MainActivity : ComponentActivity() {
             .create(applicationComponentProvider)
             .inject(this)
 
-//        enableEdgeToEdge()
         setContent {
             CompositionLocalProvider(LocalApplicationComponentProvider provides applicationComponentProvider) {
                 YAMALCTheme {
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = SplashRoute
+                        startDestination = MainRoute
                     ) {
                         screenProviders.values.forEach { screenProvider ->
                             screenProvider.get().provideDestination(
