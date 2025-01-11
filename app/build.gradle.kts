@@ -81,4 +81,5 @@ dependencies {
     implementation(project(":search"))
     implementation(project(":anime-lists"))
     implementation(project(":anime-title"))
+    implementation(project(":edit-anime-list-entry"))
 }

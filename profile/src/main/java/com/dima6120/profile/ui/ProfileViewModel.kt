@@ -14,6 +14,7 @@ import com.dima6120.core_api.utils.DateFormatter
 import com.dima6120.profile.R
 import com.dima6120.core_api.usecase.GetAuthorizeLinkUseCase
 import com.dima6120.core_api.usecase.GetLoggedInFlowUseCase
+import com.dima6120.profile.usecase.GetProfileFlowUseCase
 import com.dima6120.profile.usecase.GetProfileUseCase
 import com.dima6120.profile.usecase.LogoutUseCase
 import com.dima6120.ui.models.TextUIModel
@@ -21,6 +22,9 @@ import com.dima6120.ui.models.toErrorUIModel
 import com.dima6120.ui.models.toTextUIModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.max
@@ -30,11 +34,14 @@ class ProfileViewModel(
     private val getProfileUseCase: GetProfileUseCase,
     private val getLoggedInFlowUseCase: GetLoggedInFlowUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val getProfileFlowUseCase: GetProfileFlowUseCase,
     private val dateFormatter: DateFormatter
 ): ViewModel() {
 
     var state by mutableStateOf<ProfileState>(ProfileState.Loading)
         private set
+
+    private var collectProfileFlowJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -43,6 +50,7 @@ class ProfileViewModel(
                     if (loggedIn) {
                         loadProfile()
                     } else {
+                        stopCollectingProfileFlow()
                         updateState { ProfileState.Unauthorized() }
                     }
                 }
@@ -63,13 +71,16 @@ class ProfileViewModel(
                         )
                     }
 
-                is UseCaseResult.Success ->
+                is UseCaseResult.Success -> {
                     updateState {
                         ProfileState.Authorized(
                             userInfo = result.value.toUserInfoUIModel(),
                             animeStatistics = result.value.animeStatistics.toAnimeStatisticsUIModel()
                         )
                     }
+
+                    collectProfileFlow()
+                }
             }
         }
     }
@@ -90,6 +101,25 @@ class ProfileViewModel(
 
     fun openLinkEventConsumed() {
         updateUnauthorizedState { copy(openLinkEvent = consumed()) }
+    }
+
+    private fun stopCollectingProfileFlow() {
+        collectProfileFlowJob?.cancel()
+        collectProfileFlowJob = null
+    }
+
+    private fun collectProfileFlow() {
+        collectProfileFlowJob?.cancel()
+        collectProfileFlowJob = viewModelScope.launch {
+            getProfileFlowUseCase().collect {
+                updateState {
+                    ProfileState.Authorized(
+                        userInfo = it.toUserInfoUIModel(),
+                        animeStatistics = it.animeStatistics.toAnimeStatisticsUIModel()
+                    )
+                }
+            }
+        }
     }
 
     private fun ProfileModel.toUserInfoUIModel(): UserInfoUIModel =
@@ -150,7 +180,8 @@ class ProfileViewModel(
         private val getProfileUseCase: GetProfileUseCase,
         private val getLoggedInFlowUseCase: GetLoggedInFlowUseCase,
         private val logoutUseCase: LogoutUseCase,
-        private val dateFormatter: DateFormatter
+        private val dateFormatter: DateFormatter,
+        private val getProfileFlowUseCase: GetProfileFlowUseCase
     ): ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
@@ -159,6 +190,7 @@ class ProfileViewModel(
                 getProfileUseCase,
                 getLoggedInFlowUseCase,
                 logoutUseCase,
+                getProfileFlowUseCase,
                 dateFormatter
             ) as T
     }

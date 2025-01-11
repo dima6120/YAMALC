@@ -1,11 +1,13 @@
 package com.dima6120.anime_title.ui
 
 import com.dima6120.core_api.model.anime.AnimeId
+import com.dima6120.core_api.model.mylist.ListStatusModel
+import com.dima6120.edit_anime_list_entry_api.EditAnimeListEntryRoute
 import com.dima6120.ui.models.ErrorUIModel
 import com.dima6120.ui.models.TextUIModel
-import de.palm.composestateevents.StateEvent
 import de.palm.composestateevents.StateEventWithContent
 import de.palm.composestateevents.consumed
+import de.palm.composestateevents.triggered
 
 sealed class AnimeTitleState {
 
@@ -14,7 +16,9 @@ sealed class AnimeTitleState {
     data class Error(val error: ErrorUIModel): AnimeTitleState()
 
     data class AnimeDetails(
-        val animeDetails: AnimeDetailsUIModel
+        val listStatusModel: ListStatusModel?,
+        val animeDetails: AnimeDetailsUIModel,
+        val openEditAnimeListEntryScreenEvent: StateEventWithContent<EditAnimeListEntryRoute> = consumed()
     ) : AnimeTitleState()
 }
 

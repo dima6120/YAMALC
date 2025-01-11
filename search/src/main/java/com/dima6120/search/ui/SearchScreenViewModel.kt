@@ -157,9 +157,10 @@ class SearchScreenViewModel(
     }
 
     private fun AnimeBriefDetailsModel.toAnimeItemUIModel(): AnimeItemUIModel {
-        val episodes = this.episodes?.let {
-            TextUIModel.stringResource(com.dima6120.ui.R.string.episodes, it)
-        }.orUnknownValue()
+        val episodes = TextUIModel.stringResource(
+            id = com.dima6120.ui.R.string.episodes,
+            this.episodes?.toTextUIModel().orUnknownValue()
+        )
 
         return AnimeItemUIModel(
             animeId = this.id,

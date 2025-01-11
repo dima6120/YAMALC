@@ -1,5 +1,7 @@
 package com.dima6120.profile.di
 
+import com.dima6120.profile.usecase.GetProfileFlowUseCase
+import com.dima6120.profile.usecase.GetProfileFlowUseCaseImpl
 import com.dima6120.profile.usecase.GetProfileUseCase
 import com.dima6120.profile.usecase.GetProfileUseCaseImpl
 import com.dima6120.profile.usecase.LogoutUseCase
@@ -15,4 +17,7 @@ interface UseCaseModule {
 
     @Binds
     fun provideLogoutUseCase(impl: LogoutUseCaseImpl): LogoutUseCase
+
+    @Binds
+    fun provideGetProfileFlowUseCase(impl: GetProfileFlowUseCaseImpl): GetProfileFlowUseCase
 }

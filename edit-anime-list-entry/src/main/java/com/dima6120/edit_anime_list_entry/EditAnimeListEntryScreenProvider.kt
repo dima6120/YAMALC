@@ -1,0 +1,5 @@
+package com.dima6120.edit_anime_list_entry
+
+import com.dima6120.core_api.navigation.ScreenProvider
+
+interface EditAnimeListEntryScreenProvider: ScreenProvider

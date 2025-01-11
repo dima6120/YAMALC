@@ -3,6 +3,7 @@ package com.dima6120.anime_lists.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +20,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
@@ -36,9 +39,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -55,6 +60,7 @@ import com.dima6120.core_api.model.mylist.ListStatusModel
 import com.dima6120.ui.Screen
 import com.dima6120.ui.composable.ErrorItem
 import com.dima6120.ui.composable.ErrorScreen
+import com.dima6120.ui.composable.IconButton
 import com.dima6120.ui.composable.ItemList
 import com.dima6120.ui.composable.LoadingItem
 import com.dima6120.ui.composable.LoadingScreen
@@ -63,7 +69,9 @@ import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.text
 import com.dima6120.ui.theme.Yamalc
 import com.dima6120.ui.theme.YamalcColors
+import com.dima6120.ui.theme.toColor
 import de.palm.composestateevents.EventEffect
+import de.palm.composestateevents.NavigationEventEffect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -88,7 +96,14 @@ fun AnimeListsScreen(
         val state = viewModel.state.value
 
         when (state) {
-            is AnimeListsState.Authorized ->
+            is AnimeListsState.Authorized -> {
+                NavigationEventEffect(
+                    event = state.openEditAnimeListEntryScreenEvent,
+                    onConsumed = viewModel::openEditAnimeListEntryScreenEventConsumed
+                ) { route ->
+                    navController.navigate(route)
+                }
+
                 AnimeListPages(
                     state = state,
                     onActiveListChanged = viewModel::activeAnimeListChanged,
@@ -97,9 +112,11 @@ fun AnimeListsScreen(
                             AnimeTitleRoute(animeId)
                         )
                     },
+                    onEditItemClick = viewModel::openEditAnimeListEntryScreen,
                     onLoadNextPage = viewModel::nextActiveAnimeListPage,
                     onRetryLoadPageClick = viewModel::retry,
                 )
+            }
 
             is AnimeListsState.Error ->
                 ErrorScreen(
@@ -166,6 +183,7 @@ private fun AnimeListPages(
     state: AnimeListsState.Authorized,
     onActiveListChanged: (Int) -> Unit,
     onAnimeItemClick: (AnimeId) -> Unit,
+    onEditItemClick: (AnimeId) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadPageClick: () -> Unit
 ) {
@@ -232,7 +250,8 @@ private fun AnimeListPages(
                 animeListUIModel = state.animeLists[index],
                 onAnimeItemClick = onAnimeItemClick,
                 onLoadNextPage = onLoadNextPage,
-                onRetryLoadPageClick = onRetryLoadPageClick
+                onRetryLoadPageClick = onRetryLoadPageClick,
+                onEditItemClick = onEditItemClick
             )
         }
     }
@@ -243,6 +262,7 @@ private fun AnimeListPage(
     modifier: Modifier = Modifier,
     animeListUIModel: AnimeListUIModel,
     onAnimeItemClick: (AnimeId) -> Unit,
+    onEditItemClick: (AnimeId) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryLoadPageClick: () -> Unit
 ) {
@@ -287,7 +307,8 @@ private fun AnimeListPage(
                                 onClick = { onAnimeItemClick(it.item.animeId) }
                             ),
                         entry = it.item,
-                        status = animeListUIModel.status
+                        status = animeListUIModel.status,
+                        onEditClick = { onEditItemClick(it.item.animeId) }
                     )
 
                 ListItemUIModel.Loading -> LoadingItem()
@@ -300,7 +321,8 @@ private fun AnimeListPage(
 private fun AnimeListEntry(
     modifier: Modifier = Modifier,
     entry: AnimeListEntryUIModel,
-    status: ListStatusModel
+    status: ListStatusModel,
+    onEditClick: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(modifier = modifier.weight(1f)) {
@@ -320,12 +342,51 @@ private fun AnimeListEntry(
                 item = entry,
                 status = status
             )
+
+            Actions(
+                onEditClick = onEditClick
+            )
         }
 
         Divider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 0.5.dp,
             color = YamalcColors.Gray78
+        )
+    }
+}
+
+@Composable
+private fun Actions(
+    modifier: Modifier = Modifier,
+    onEditClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .padding(
+                vertical = Yamalc.padding.m
+            )
+            .padding(end = Yamalc.padding.l)
+            .fillMaxHeight()
+    ) {
+        Icon(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .border(
+                    width = 1.dp,
+                    shape = RoundedCornerShape(2.dp),
+                    color = YamalcColors.Gray5C
+                )
+                .padding(Yamalc.padding.s)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onEditClick
+                )
+            ,
+            imageVector = ImageVector.vectorResource(id = com.dima6120.ui.R.drawable.ic_edit),
+            tint = YamalcColors.Gray5C,
+            contentDescription = null
         )
     }
 }
@@ -397,14 +458,6 @@ private fun EntryProgress(
     episodes: TextUIModel,
     episodesWatched: TextUIModel
 ) {
-    val progressColor = when (status) {
-        ListStatusModel.WATCHING -> YamalcColors.Green
-        ListStatusModel.COMPLETED -> MaterialTheme.colors.primaryVariant
-        ListStatusModel.ON_HOLD -> YamalcColors.Yellow
-        ListStatusModel.DROPPED -> YamalcColors.Red
-        ListStatusModel.PLAN_TO_WATCH -> YamalcColors.Gray5C
-    }
-
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Yamalc.space.m)
@@ -419,7 +472,7 @@ private fun EntryProgress(
                 modifier = modifier
                     .fillMaxWidth(fraction = progress)
                     .fillMaxHeight()
-                    .background(progressColor)
+                    .background(status.toColor())
             )
         }
 

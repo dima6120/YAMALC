@@ -2,6 +2,7 @@ package com.dima6120.anime_lists.ui
 
 import com.dima6120.core_api.model.anime.AnimeId
 import com.dima6120.core_api.model.mylist.ListStatusModel
+import com.dima6120.edit_anime_list_entry_api.EditAnimeListEntryRoute
 import com.dima6120.ui.models.ErrorUIModel
 import com.dima6120.ui.models.ItemUIModel
 import com.dima6120.ui.models.ListItemUIModel
@@ -17,6 +18,7 @@ sealed class AnimeListsState {
 
     data class Authorized(
         val activeAnimeListIndex: Int = 0,
+        val openEditAnimeListEntryScreenEvent: StateEventWithContent<EditAnimeListEntryRoute> = consumed(),
         val animeLists: List<AnimeListUIModel> = emptyList()
     ): AnimeListsState()
 

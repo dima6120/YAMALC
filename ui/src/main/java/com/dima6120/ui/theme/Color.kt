@@ -1,6 +1,8 @@
 package com.dima6120.ui.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
+import com.dima6120.core_api.model.mylist.ListStatusModel
 
 object YamalcColors {
     val PrimaryColorLight = Color(0xFF2E51A2)
@@ -19,4 +21,13 @@ object YamalcColors {
     val Red = Color(0xFFA22E2E)
     val Yellow = Color(0xFFF4D360)
 }
+
+fun ListStatusModel.toColor(): Color =
+    when (this) {
+        ListStatusModel.WATCHING -> YamalcColors.Green
+        ListStatusModel.COMPLETED -> YamalcColors.PrimaryVariantColorLight
+        ListStatusModel.ON_HOLD -> YamalcColors.Yellow
+        ListStatusModel.DROPPED -> YamalcColors.Red
+        ListStatusModel.PLAN_TO_WATCH -> YamalcColors.Gray5C
+    }
 

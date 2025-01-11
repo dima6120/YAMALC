@@ -27,7 +27,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -66,7 +68,9 @@ import com.dima6120.ui.models.TextUIModel
 import com.dima6120.ui.models.text
 import com.dima6120.ui.theme.YamalcColors
 import com.dima6120.ui.theme.Yamalc
+import com.dima6120.ui.theme.toColor
 import de.palm.composestateevents.EventEffect
+import de.palm.composestateevents.NavigationEventEffect
 import kotlin.math.absoluteValue
 import kotlin.math.min
 
@@ -119,6 +123,34 @@ fun AnimeTitleScreen(
                     }
                 )
             },
+            floatingActionButton = {
+                if (state is AnimeTitleState.AnimeDetails) {
+                    val contentColor =
+                        if (state.listStatusModel != null)
+                            MaterialTheme.colors.secondary
+                        else
+                            MaterialTheme.colors.primary
+
+                    val backgroundColor = state.listStatusModel?.toColor() ?: MaterialTheme.colors.secondary
+
+                    val icon =
+                        if (state.listStatusModel != null)
+                            com.dima6120.ui.R.drawable.ic_edit
+                        else
+                            com.dima6120.ui.R.drawable.ic_add
+
+                    FloatingActionButton(
+                        backgroundColor = backgroundColor,
+                        contentColor = contentColor,
+                        onClick = viewModel::openEditAnimeListEntryScreen
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = icon),
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
         ) { padding ->
             Box(
                 modifier = Modifier
@@ -126,7 +158,14 @@ fun AnimeTitleScreen(
                     .fillMaxSize()
             ) {
                 when (state) {
-                    is AnimeTitleState.AnimeDetails ->
+                    is AnimeTitleState.AnimeDetails -> {
+                        NavigationEventEffect(
+                            event = state.openEditAnimeListEntryScreenEvent,
+                            onConsumed = viewModel::openEditAnimeListEntryScreenEventConsumed
+                        ) { route ->
+                            navController.navigate(route)
+                        }
+
                         AnimeDetailsScreen(
                             state = state,
                             onAnimeClick = { animeId ->
@@ -135,6 +174,7 @@ fun AnimeTitleScreen(
                                 )
                             }
                         )
+                    }
 
                     is AnimeTitleState.Error -> ErrorScreen(errorUIModel = state.error)
 
