@@ -80,9 +80,8 @@ import com.dima6120.ui.models.text
 import com.dima6120.ui.theme.YAMALCTheme
 import com.dima6120.ui.theme.Yamalc
 import com.dima6120.ui.theme.YamalcColors
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 @Composable
 fun SearchScreen(
@@ -162,7 +161,11 @@ fun SearchScreen(
                 )
             } else {
                 when (state.searchResults) {
-                    SearchResults.EmptyResults -> {}
+                    SearchResults.EmptyQuery ->
+                        TextScreen(text = stringResource(id = R.string.empty_query))
+
+                    SearchResults.EmptyResults ->
+                        TextScreen(text = stringResource(id = R.string.no_results))
 
                     is SearchResults.Error ->
                         ErrorScreen(
@@ -190,6 +193,21 @@ fun SearchScreen(
 }
 
 @Composable
+private fun TextScreen(
+    modifier: Modifier = Modifier,
+    text: String
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = text,
+            style = Yamalc.type.fieldValue,
+            color = YamalcColors.Gray5C
+        )
+    }
+}
+
+@Composable
 private fun AnimeItemList(
     modifier: Modifier = Modifier,
     items: List<ListItemUIModel<AnimeItemUIModel>>,
@@ -201,9 +219,9 @@ private fun AnimeItemList(
 
     LaunchedEffect(state) {
         snapshotFlow { state.layoutInfo.visibleItemsInfo }
-            .map { it.last().index }
+            .mapNotNull { it.lastOrNull()?.index }
             .distinctUntilChanged()
-            .collectLatest { lastVisibleIndex ->
+            .collect { lastVisibleIndex ->
                 val totalItems = state.layoutInfo.totalItemsCount
 
                 if (lastVisibleIndex + 3 > totalItems - 1) {

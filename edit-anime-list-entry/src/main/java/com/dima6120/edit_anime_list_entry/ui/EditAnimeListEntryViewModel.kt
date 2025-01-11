@@ -41,6 +41,7 @@ class EditAnimeListEntryViewModel(
                     statusModel = it
                 )
             },
+            newEntry = animeBriefDetailsModel.myListStatus == null,
             episodes = animeBriefDetailsModel.episodes,
             myListStatus = animeListEntryUpdateModel.toMyListStatusUIModel(),
             animeInfo = animeBriefDetailsModel.toAnimeInfoUIModel()

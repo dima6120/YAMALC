@@ -20,6 +20,7 @@ import com.dima6120.core_api.model.anime.RelationTypeModel
 import com.dima6120.core_api.model.anime.toAnimeBriefDetailsModel
 import com.dima6120.core_api.model.mylist.AnimeListEntryUpdateModel
 import com.dima6120.core_api.model.mylist.orNewEntry
+import com.dima6120.core_api.model.mylist.toMyListStatusModel
 import com.dima6120.core_api.ui.BaseViewModel
 import com.dima6120.core_api.usecase.GetDeletedAnimeListEntryFlowUseCase
 import com.dima6120.core_api.usecase.GetUpdatedAnimeListEntryFlowUseCase
@@ -57,11 +58,7 @@ class AnimeTitleViewModel(
                     animeDetails?.let {
                         if (it.id == updateModel.animeId) {
                             animeDetails = it.copy(
-                                myListStatus = it.myListStatus?.copy(
-                                    status = updateModel.status,
-                                    score = updateModel.score,
-                                    episodesWatched = updateModel.episodesWatched
-                                )
+                                myListStatus = updateModel.toMyListStatusModel()
                             )
 
                             updateSubstate<AnimeTitleState.AnimeDetails> {

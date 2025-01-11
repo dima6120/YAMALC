@@ -47,8 +47,14 @@ class DateFormatterImpl @Inject constructor(): DateFormatter {
         val minutes = TimeUnit.SECONDS.toMinutes(seconds)
 
         return when {
-            hours != 0L && minutes != 0L -> Time.HoursAndMinutes(hours, minutes)
-            hours != 0L -> Time.Hours(hours)
+            hours != 0L -> {
+                (minutes - TimeUnit.HOURS.toMinutes(hours))
+                    .takeIf { it > 0 }
+                    ?.let {
+                        Time.HoursAndMinutes(hours, it)
+                    }
+                    ?: Time.Hours(hours)
+            }
             minutes != 0L -> Time.Minutes(minutes)
             else -> Time.Seconds(seconds)
         }

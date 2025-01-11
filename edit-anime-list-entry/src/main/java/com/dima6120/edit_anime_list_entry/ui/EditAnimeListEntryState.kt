@@ -12,6 +12,7 @@ data class EditAnimeListState(
     val myListStatus: MyListStatusUIModel,
     val animeInfo: AnimeInfoUIModel,
     val actionButtonsEnabled: Boolean = true,
+    val newEntry: Boolean,
     val navigateBackEvent: StateEvent = consumed,
     val showSnackbarEvent: StateEventWithContent<TextUIModel> = consumed()
 )

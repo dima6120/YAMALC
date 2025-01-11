@@ -272,7 +272,7 @@ private fun AnimeListPage(
         snapshotFlow { state.layoutInfo.visibleItemsInfo }
             .mapNotNull { it.lastOrNull()?.index }
             .distinctUntilChanged()
-            .collectLatest { lastVisibleIndex ->
+            .collect { lastVisibleIndex ->
                 val totalItems = state.layoutInfo.totalItemsCount
 
                 if (lastVisibleIndex + 3 > totalItems - 1) {

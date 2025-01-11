@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -155,6 +156,7 @@ fun AnimeTitleScreen(
             Box(
                 modifier = Modifier
                     .padding(padding)
+                    .padding()
                     .fillMaxSize()
             ) {
                 when (state) {
@@ -195,12 +197,14 @@ private fun AnimeDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Yamalc.padding.xl)
+            .padding(horizontal = Yamalc.padding.xl)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(Yamalc.space.xxl)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .padding(top = Yamalc.padding.xl)
+                .fillMaxWidth()
         ) {
             Pictures(
                 modifier = Modifier
@@ -221,6 +225,7 @@ private fun AnimeDetailsScreen(
         )
 
         RelatedAnime(
+            modifier = Modifier.padding(bottom = 50.dp),
             relatedAnimeItems = animeDetails.relatedAnimeItems,
             onAnimeClick = onAnimeClick
         )
@@ -281,7 +286,7 @@ private fun RelatedAnime(
         verticalArrangement = Arrangement.spacedBy(Yamalc.space.s)
     ) {
         Column(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(Yamalc.space.l)
         ) {
             val items = remember(showMore) {
@@ -299,13 +304,13 @@ private fun RelatedAnime(
             }
         }
 
-        ExpandArrow(
-            expanded = showMore,
-            onClick = { showMore = !showMore }
-        )
+        if (relatedAnimeItems.size > 2) {
+            ExpandArrow(
+                expanded = showMore,
+                onClick = { showMore = !showMore }
+            )
+        }
     }
-
-
 }
 
 @Composable
@@ -576,33 +581,48 @@ private fun Pictures(
 ) {
     val pagerState = rememberPagerState(pageCount = { pictures.size })
 
-    HorizontalPager(
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = YamalcColors.Gray78
-            ),
-        state = pagerState,
-        pageSpacing = Yamalc.padding.xl,
-        contentPadding = PaddingValues(Yamalc.padding.xl)
-    ) {page ->
-        AsyncImage(
+    Box(modifier = modifier) {
+        HorizontalPager(
             modifier = Modifier
                 .fillMaxSize()
-                .graphicsLayer {
-                    val pageOffset =
-                        ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+                .border(
+                    width = 1.dp,
+                    color = YamalcColors.Gray78
+                ),
+            state = pagerState,
+            pageSpacing = Yamalc.padding.xl,
+            contentPadding = PaddingValues(Yamalc.padding.xl)
+        ) { page ->
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        val pageOffset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
-                    alpha = lerp(
-                        start = 0.5f,
-                        stop = 1f,
-                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    )
-                }
-            ,
-            model = pictures[page],
-            contentScale = ContentScale.Fit,
-            contentDescription = null
+                        alpha = lerp(
+                            start = 0.5f,
+                            stop = 1f,
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        )
+                    },
+                model = pictures[page],
+                contentScale = ContentScale.Fit,
+                contentDescription = null
+            )
+        }
+
+        Text(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(Yamalc.padding.m),
+            text = stringResource(
+                id = R.string.pager_counter,
+                pagerState.currentPage + 1,
+                pictures.size
+            ),
+            style = Yamalc.type.fieldTitle,
+            color = YamalcColors.Gray78
         )
     }
 }

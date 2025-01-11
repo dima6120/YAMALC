@@ -104,12 +104,14 @@ fun EditAnimeListEntryScreen(
                          )
                     },
                     actions = {
-                        TextButton(
-                            text = stringResource(id = R.string.remove_button),
-                            enabled = state.actionButtonsEnabled,
-                            elevation = null,
-                            onClick = viewModel::remove
-                        )
+                        if (!state.newEntry) {
+                            TextButton(
+                                text = stringResource(id = R.string.remove_button),
+                                enabled = state.actionButtonsEnabled,
+                                elevation = null,
+                                onClick = viewModel::remove
+                            )
+                        }
 
                         TextButton(
                             text = stringResource(id = R.string.save_button),
@@ -219,7 +221,7 @@ private fun ValueSelector(
                     ?.index
             }
             .distinctUntilChanged()
-            .collectLatest(onValueSelected)
+            .collect(onValueSelected)
     }
 
     BoxWithConstraints(

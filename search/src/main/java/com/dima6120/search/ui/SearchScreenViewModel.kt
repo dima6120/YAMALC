@@ -41,7 +41,7 @@ class SearchScreenViewModel(
         updateState {
             copy(
                 query = "",
-                searchResults = SearchResults.EmptyResults
+                searchResults = SearchResults.EmptyQuery
             )
         }
     }
@@ -151,7 +151,11 @@ class SearchScreenViewModel(
     private fun updateResults() {
         updateState {
             copy(
-                searchResults = SearchResults.Results(items.toList())
+                searchResults =
+                    if (items.isEmpty())
+                        SearchResults.EmptyResults
+                    else
+                        SearchResults.Results(items.toList())
             )
         }
     }

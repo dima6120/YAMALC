@@ -9,10 +9,12 @@ import com.dima6120.ui.models.TextUIModel
 data class SearchScreenState(
     val query: String = "",
     val queries: List<String> = emptyList(),
-    val searchResults: SearchResults = SearchResults.EmptyResults
+    val searchResults: SearchResults = SearchResults.EmptyQuery
 )
 
 sealed class SearchResults {
+
+    data object EmptyQuery: SearchResults()
 
     data object EmptyResults: SearchResults()
 

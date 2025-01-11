@@ -8,3 +8,12 @@ data class AnimeListEntryUpdateModel(
     val score: Int = 0,
     val episodesWatched: Int = 0,
 )
+
+fun AnimeListEntryUpdateModel.toMyListStatusModel(): MyListStatusModel =
+    MyListStatusModel(
+        status = this.status,
+        score = this.score,
+        episodesWatched = this.episodesWatched,
+        startDate = null,
+        finishDate = null
+    )
