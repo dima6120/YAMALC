@@ -44,13 +44,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -66,6 +65,7 @@ import com.dima6120.anime_title_api.AnimeTitleRoute
 import com.dima6120.core_api.model.anime.AnimeId
 import com.dima6120.search.R
 import com.dima6120.search.di.SearchComponentHolder
+import com.dima6120.search.utils.TestTags
 import com.dima6120.search_api.SearchRoute
 import com.dima6120.ui.Screen
 import com.dima6120.ui.composable.ErrorItem
@@ -99,94 +99,119 @@ fun SearchScreen(
     ) { component ->
         val viewModel = viewModel<SearchScreenViewModel>(factory = component.provideSearchScreenViewModelFactory())
         val state = viewModel.state.value
-        val focusManager = LocalFocusManager.current
-        var searchActive by remember { mutableStateOf(false) }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Box(
+        SearchScreenInternal(
+            state = state,
+            search = viewModel::search,
+            searchWithGivenQuery = viewModel::search,
+            clearSearch = viewModel::clearSearch,
+            queryChanged = viewModel::queryChanged,
+            onAnimeItemClick = { animeId ->
+                navController.navigate(
+                    AnimeTitleRoute(animeId)
+                )
+            },
+            onLoadNextPage = viewModel::nextPage,
+            onRetryLoadPageClick = viewModel::nextPage
+        )
+    }
+}
+
+@Composable
+internal fun SearchScreenInternal(
+    state: SearchScreenState,
+    search: () -> Unit,
+    searchWithGivenQuery: (String) -> Unit,
+    clearSearch: () -> Unit,
+    queryChanged: (String) -> Unit,
+    onAnimeItemClick: (AnimeId) -> Unit,
+    onLoadNextPage: () -> Unit,
+    onRetryLoadPageClick: () -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+    var searchActive by remember { mutableStateOf(false) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(end = Yamalc.padding.l)
+                    ) {
+                        SearchField(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(end = Yamalc.padding.l)
-                        ) {
-                            SearchField(
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .onFocusChanged { searchActive = it.isFocused }
-                                ,
-                                query = state.query,
-                                leadingIcon = {
-                                    IconButton(
-                                        icon = R.drawable.ic_search_leading,
-                                        tint = YamalcColors.Gray80,
-                                        onClick = {
-                                            focusManager.clearFocus()
-                                            viewModel.search()
-                                        }
-                                    )
-                                },
-                                trailingIcon = {
-                                    IconButton(
-                                        icon = R.drawable.ic_search_trailing,
-                                        tint = YamalcColors.Gray80,
-                                        onClick = {
-                                            focusManager.clearFocus()
-                                            viewModel.clearSearch()
-                                        }
-                                    )
-                                },
-                                onQueryChanged = viewModel::queryChanged,
-                                onSearch = {
-                                    focusManager.clearFocus()
-                                    viewModel.search()
-                                }
-                            )
-                        }
-                    }
-                )
-            }
-        ) {
-            if (searchActive) {
-                ResentSearches(
-                    modifier = Modifier
-                        .padding(it)
-                        .imePadding(),
-                    queries = state.queries,
-                    onQueryClick = { query ->
-                        focusManager.clearFocus()
-                        viewModel.search(query)
-                    }
-                )
-            } else {
-                when (state.searchResults) {
-                    SearchResults.EmptyQuery ->
-                        TextScreen(text = stringResource(id = R.string.empty_query))
-
-                    SearchResults.EmptyResults ->
-                        TextScreen(text = stringResource(id = R.string.no_results))
-
-                    is SearchResults.Error ->
-                        ErrorScreen(
-                            errorUIModel = state.searchResults.error,
-                            onButtonClick = viewModel::search
-                        )
-
-                    SearchResults.Loading -> LoadingScreen()
-
-                    is SearchResults.Results ->
-                        AnimeItemList(
-                            items = state.searchResults.items,
-                            onAnimeItemClick = { animeId ->
-                                navController.navigate(
-                                    AnimeTitleRoute(animeId)
+                                .testTag(TestTags.SearchField)
+                                .align(Alignment.CenterStart)
+                                .onFocusChanged { searchActive = it.isFocused },
+                            query = state.query,
+                            leadingIcon = {
+                                IconButton(
+                                    icon = R.drawable.ic_search_leading,
+                                    tint = YamalcColors.Gray80,
+                                    onClick = {
+                                        focusManager.clearFocus()
+                                        search()
+                                    }
                                 )
                             },
-                            onLoadNextPage = viewModel::nextPage,
-                            onRetryLoadPageClick = viewModel::nextPage
+                            trailingIcon = {
+                                IconButton(
+                                    icon = R.drawable.ic_search_trailing,
+                                    tint = YamalcColors.Gray80,
+                                    onClick = {
+                                        focusManager.clearFocus()
+                                        clearSearch()
+                                    }
+                                )
+                            },
+                            onQueryChanged = queryChanged,
+                            onSearch = {
+                                focusManager.clearFocus()
+                                search()
+                            }
                         )
+                    }
                 }
+            )
+        }
+    ) {
+        if (searchActive) {
+            ResentSearches(
+                modifier = Modifier
+                    .testTag(TestTags.ResentSearches)
+                    .padding(it)
+                    .imePadding(),
+                queries = state.queries,
+                onQueryClick = { query ->
+                    focusManager.clearFocus()
+                    searchWithGivenQuery(query)
+                }
+            )
+        } else {
+            when (state.searchResults) {
+                SearchResults.EmptyQuery ->
+                    TextScreen(text = stringResource(id = R.string.empty_query))
+
+                SearchResults.EmptyResults ->
+                    TextScreen(text = stringResource(id = R.string.no_results))
+
+                is SearchResults.Error ->
+                    ErrorScreen(
+                        errorUIModel = state.searchResults.error,
+                        onButtonClick = search
+                    )
+
+                SearchResults.Loading -> LoadingScreen()
+
+                is SearchResults.Results ->
+                    AnimeItemList(
+                        items = state.searchResults.items,
+                        onAnimeItemClick = onAnimeItemClick,
+                        onLoadNextPage = onLoadNextPage,
+                        onRetryLoadPageClick = onRetryLoadPageClick
+                    )
             }
         }
     }
