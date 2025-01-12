@@ -7,6 +7,7 @@ import com.dima6120.core_api.storage.AppPreferences
 import com.dima6120.core_impl.error.InternalErrorHandler
 import com.dima6120.core_impl.network.service.AuthService
 import com.dima6120.core_impl.security.manager.CryptoManager
+import com.dima6120.core_impl.utils.AppPreferencesKey
 import com.dima6120.core_impl.utils.PkceGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -23,7 +24,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val json = Json.Default
     private val codeVerifier = PkceGenerator.generateVerifier(128)
 
-    override fun getLoggedInFlow(): Flow<Boolean> = appPreferences.getStringFlow(AUTH_TOKEN_KEY).map { it != null }
+    override fun getLoggedInFlow(): Flow<Boolean> =
+        appPreferences.getStringFlow(AppPreferencesKey.AUTH_TOKEN_KEY).map { it != null }
 
     override suspend fun getAccessToken(): String? = getAuthToken()?.accessToken
 
@@ -63,14 +65,15 @@ class AuthRepositoryImpl @Inject constructor(
         }
 
     override suspend fun deleteAuthToken() {
-        appPreferences.removeString(AUTH_TOKEN_KEY)
+        appPreferences.removeString(AppPreferencesKey.AUTH_TOKEN_KEY)
     }
 
     private suspend fun putAuthToken(authToken: AuthToken) {
-        appPreferences.putString(AUTH_TOKEN_KEY, encrypt(authToken))
+        appPreferences.putString(AppPreferencesKey.AUTH_TOKEN_KEY, encrypt(authToken))
     }
 
-    private suspend fun getAuthToken(): AuthToken? = appPreferences.getString(AUTH_TOKEN_KEY)?.let(::decrypt)
+    private suspend fun getAuthToken(): AuthToken? =
+        appPreferences.getString(AppPreferencesKey.AUTH_TOKEN_KEY)?.let(::decrypt)
 
     private fun encrypt(authToken: AuthToken): String {
         val jsonString = json.encodeToString(AuthToken.serializer(), authToken)
@@ -85,8 +88,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     companion object {
-
-        private const val AUTH_TOKEN_KEY = "auth_token"
 
         private const val CODE_PARAMETER = "code"
         private const val STATE_PARAMETER = "state"

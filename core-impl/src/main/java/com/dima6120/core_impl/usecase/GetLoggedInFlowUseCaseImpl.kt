@@ -9,5 +9,5 @@ class GetLoggedInFlowUseCaseImpl @Inject constructor(
     private val loginRepository: LoginRepository
 ) : GetLoggedInFlowUseCase {
 
-    override suspend fun invoke(): Flow<Boolean> = loginRepository.getLoggedInFlow()
+    override fun invoke(): Flow<Boolean> = loginRepository.getLoggedInFlow()
 }

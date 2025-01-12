@@ -1,30 +1,32 @@
 package com.dima6120.core_impl.utils
 
 import android.util.Log
-import android.util.TimeUtils
 import com.dima6120.core_api.model.Time
 import com.dima6120.core_api.utils.DateFormatter
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.min
 
 class DateFormatterImpl @Inject constructor(): DateFormatter {
 
-    private val dateFormatter: DateTimeFormatter by lazy {
-        DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.US)
+    private val mdyDateFormatter: DateTimeFormatter by lazy {
+        DateTimeFormatter.ofPattern(MDY_DATE_PATTERN, Locale.US)
     }
+
+    private val myDateFormatter: DateTimeFormatter by lazy {
+        DateTimeFormatter.ofPattern(MY_DATE_PATTERN, Locale.US)
+    }
+
 
     override fun formatDate(dateString: String): String? =
         try {
             when (dateString.count { it == '-' }) {
                 0 -> dateString // 2025
-                1 -> YearMonth.parse(dateString).format(dateFormatter) // 2025-01
-                else -> LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE).format(dateFormatter) // 2025-01-25
+                1 -> YearMonth.parse(dateString).format(myDateFormatter) // 2025-01
+                else -> LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE).format(mdyDateFormatter) // 2025-01-25
             }
         } catch (e: Exception) {
             Log.w(TAG, e)
@@ -34,7 +36,7 @@ class DateFormatterImpl @Inject constructor(): DateFormatter {
 
     override fun formatDateTime(dateTimeString: String): String? =
         try {
-            LocalDate.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME).format(dateFormatter)
+            LocalDate.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME).format(mdyDateFormatter)
         } catch (e: Exception) {
             Log.w(TAG, e)
             null
@@ -64,6 +66,7 @@ class DateFormatterImpl @Inject constructor(): DateFormatter {
 
         private val TAG = DateFormatterImpl::class.java.simpleName
 
-        private const val DATE_PATTERN = "MMM d, yyyy"
+        private const val MDY_DATE_PATTERN = "MMM d, yyyy"
+        private const val MY_DATE_PATTERN = "MMM yyyy"
     }
 }

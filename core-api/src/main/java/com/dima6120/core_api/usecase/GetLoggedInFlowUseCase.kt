@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface GetLoggedInFlowUseCase {
 
-    suspend operator fun invoke(): Flow<Boolean>
+    operator fun invoke(): Flow<Boolean>
 }

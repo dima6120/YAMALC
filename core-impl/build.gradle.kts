@@ -64,4 +64,7 @@ dependencies {
     implementation(libs.squareup.retrofit.kotlinxSerializationConverter)
     implementation(libs.squareup.okhttp.loggingInterceptor)
     implementation(kotlin("reflect"))
+
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinxCoroutinesTest)
 }
