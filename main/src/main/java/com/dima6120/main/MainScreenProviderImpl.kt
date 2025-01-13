@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.dima6120.main.ui.MainScreen
-import com.dima6120.main_api.MainScreenProvider
 import com.dima6120.main_api.MainRoute
 import javax.inject.Inject
 

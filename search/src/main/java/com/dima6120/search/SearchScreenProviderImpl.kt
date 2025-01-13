@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.dima6120.search.ui.SearchScreen
-import com.dima6120.search_api.SearchScreenProvider
 import com.dima6120.search_api.SearchRoute
 import javax.inject.Inject
 

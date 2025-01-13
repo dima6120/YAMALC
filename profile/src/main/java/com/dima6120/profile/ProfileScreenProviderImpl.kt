@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.dima6120.profile.ui.ProfileScreen
-import com.dima6120.profile_api.ProfileScreenProvider
 import com.dima6120.profile_api.ProfileRoute
 import javax.inject.Inject
 

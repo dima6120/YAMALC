@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.dima6120.anime_lists.ui.AnimeListsScreen
-import com.dima6120.anime_lists_api.AnimeListsScreenProvider
 import com.dima6120.anime_lists_api.AnimeListsRoute
 import javax.inject.Inject
 

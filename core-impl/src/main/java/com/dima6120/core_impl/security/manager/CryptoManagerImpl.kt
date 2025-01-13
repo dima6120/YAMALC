@@ -16,17 +16,17 @@ class CryptoManagerImpl @Inject constructor(): CryptoManager {
 
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
 
-    private val encryptCipher by lazy {
-        Cipher.getInstance(TRANSFORMATION).apply { init(Cipher.ENCRYPT_MODE, getKey()) }
-    }
+    private val encryptCipher: Cipher
+        get() = Cipher.getInstance(TRANSFORMATION).apply { init(Cipher.ENCRYPT_MODE, getKey()) }
 
-    override fun encrypt(plainText: String): String {
-        val encryptedBytes = encryptCipher.doFinal(plainText.toByteArray())
-        val encryptedStringBase64 = Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
-        val ivStringBase64 = Base64.encodeToString(encryptCipher.iv, Base64.NO_WRAP)
+    override fun encrypt(plainText: String): String =
+        encryptCipher.run {
+            val encryptedBytes = this.doFinal(plainText.toByteArray())
+            val encryptedStringBase64 = Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
+            val ivStringBase64 = Base64.encodeToString(encryptCipher.iv, Base64.NO_WRAP)
 
-        return "${encryptedStringBase64}.${ivStringBase64}"
-    }
+            "${encryptedStringBase64}.${ivStringBase64}"
+        }
 
     override fun decrypt(encrypted: String): String {
         val array = encrypted.split(".")

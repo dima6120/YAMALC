@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.dima6120.splash.ui.SplashScreen
-import com.dima6120.splash_api.SplashScreenProvider
 import com.dima6120.splash_api.SplashRoute
 import javax.inject.Inject
 

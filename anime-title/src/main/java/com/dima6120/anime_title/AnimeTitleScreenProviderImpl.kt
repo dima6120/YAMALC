@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.dima6120.anime_title.ui.AnimeTitleScreen
-import com.dima6120.anime_title_api.AnimeTitleScreenProvider
 import com.dima6120.anime_title_api.AnimeTitleRoute
 import com.dima6120.core_api.navigation.CustomNavTypes
 import javax.inject.Inject

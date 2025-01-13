@@ -1,4 +1,4 @@
-package com.dima6120.main_api
+package com.dima6120.main
 
 import com.dima6120.core_api.navigation.ScreenProvider
 
