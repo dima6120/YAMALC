@@ -21,7 +21,7 @@ class JobSynchronizer<T> {
 
                 if (activeJob == null || activeJob.isCancelled) {
 
-                    Log.i(TAG, "Running new refresh token job")
+                    Log.i(TAG, "Running new job")
 
                     activeJob = async {
 
@@ -38,7 +38,7 @@ class JobSynchronizer<T> {
                 activeJob
             }
 
-            Log.i(TAG, "Joining to existing refresh token job")
+            Log.i(TAG, "Joining to existing job")
 
             deferredJob.await()
         }

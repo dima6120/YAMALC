@@ -23,7 +23,7 @@ class CryptoManagerImpl @Inject constructor(): CryptoManager {
         encryptCipher.run {
             val encryptedBytes = this.doFinal(plainText.toByteArray())
             val encryptedStringBase64 = Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
-            val ivStringBase64 = Base64.encodeToString(encryptCipher.iv, Base64.NO_WRAP)
+            val ivStringBase64 = Base64.encodeToString(iv, Base64.NO_WRAP)
 
             "${encryptedStringBase64}.${ivStringBase64}"
         }

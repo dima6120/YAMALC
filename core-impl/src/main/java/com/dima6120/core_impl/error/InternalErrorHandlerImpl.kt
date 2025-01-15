@@ -8,7 +8,7 @@ import javax.inject.Inject
 class InternalErrorHandlerImpl @Inject constructor(): InternalErrorHandler {
 
     override fun handle(throwable: Throwable): YamalcError {
-        Log.e(TAG, throwable.toString())
+        Log.e(TAG, "Internal Error", throwable)
 
         return when (throwable) {
             is IOException -> YamalcError.Network(throwable)
