@@ -5,14 +5,13 @@
 Для взаимодействия с [MyAnimeList.net](https://myanimelist.net/ "MyAnimeList") используется официальный [API](https://myanimelist.net/clubs.php?cid=13727 "API")
 
 ### Стек
-- Kotlin, Coroutines
-- Jetpack Compose
-- Navigation Component
+- Kotlin, Coroutines, Flow
+- Jetpack Compose, Navigation Component
 - Modularization, MVVM
 - Dagger2
-- Room
-- Retrofit2
-- JUnit5, Mockk
+- Preferences DataStore, Android Keystore system
+- Retrofit2, Kotlin Serialization
+- JUnit4, MockK, Compose UI Test
 
 ### Возможности
 - Вход под выбранным аккаунтом
