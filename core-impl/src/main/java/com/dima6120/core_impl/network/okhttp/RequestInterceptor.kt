@@ -1,5 +1,6 @@
 package com.dima6120.core_impl.network.okhttp
 
+import android.util.Log
 import com.dima6120.core_impl.BuildConfig
 import com.dima6120.core_impl.network.repository.TokensRepository
 import kotlinx.coroutines.runBlocking
@@ -17,14 +18,23 @@ class RequestInterceptor @Inject constructor(
             .newBuilder()
             .addHeader(HttpHeaders.CLIENT_ID_HEADER, BuildConfig.CLIENT_ID)
             .apply {
-                runBlocking {
-                    tokensRepository.get().getAccessToken()?.let {
-                        addHeader(HttpHeaders.AUTHORIZATION_HEADER, "Bearer $it")
+                try {
+                    runBlocking {
+                        tokensRepository.get().getAccessToken()?.let {
+                            addHeader(HttpHeaders.AUTHORIZATION_HEADER, "Bearer $it")
+                        }
                     }
+                } catch (t: Throwable) {
+                    Log.w(TAG, t)
                 }
             }
             .build()
 
         return chain.proceed(request)
+    }
+
+    companion object {
+
+        private val TAG = RequestInterceptor::class.java.simpleName
     }
 }

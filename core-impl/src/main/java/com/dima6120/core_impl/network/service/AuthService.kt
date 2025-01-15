@@ -18,7 +18,7 @@ interface AuthService {
 
     @POST("token")
     @FormUrlEncoded
-    fun refreshAuthTokenAsync(
+    suspend fun refreshAuthTokenAsync(
         @Field("client_id") clientId: String,
         @Field("refresh_token") refreshToken: String,
         @Field("grant_type") grantType: String

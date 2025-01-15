@@ -1,5 +1,6 @@
 package com.dima6120.core_impl.network.okhttp
 
+import android.util.Log
 import com.dima6120.core_api.coroutines.JobSynchronizer
 import com.dima6120.core_api.network.repository.LoginRepository
 import com.dima6120.core_impl.network.repository.TokensRepository
@@ -20,15 +21,22 @@ class RefreshTokenAuthenticator @Inject constructor(
 
     override fun authenticate(route: Route?, response: Response): Request? {
 
-        val authToken = runBlocking {
-            synchronizer.runOrJoin {
-                val refreshToken = tokensRepository.get().getRefreshToken() ?: return@runOrJoin null
+        val authToken =
+            try {
+                runBlocking {
+                    synchronizer.runOrJoin {
+                        val refreshToken =
+                            tokensRepository.get().getRefreshToken() ?: return@runOrJoin null
 
-                loginRepository.get().refreshAuthToken(refreshToken)
+                        loginRepository.get().refreshAuthToken(refreshToken)
 
-                tokensRepository.get().getAccessToken()
+                        tokensRepository.get().getAccessToken()
+                    }
+                }
+            } catch (t: Throwable) {
+                Log.w(TAG, t)
+                null
             }
-        }
 
         return authToken?.let {
             response.request
